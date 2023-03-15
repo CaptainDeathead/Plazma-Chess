@@ -1,163 +1,74 @@
-import turtle as t
-import threading as th
-import time
+import pygame
+import sys
 
-# make the turtle invisible
-t.ht()
-# make the turtle faster
-t.speed(10)
-t.tracer(10)
+pygame.init()
 
-def home_menu():
-    # make the background black
-    t.bgcolor("black")
-    # make the text white
-    t.color("white")
-    t.clear()
-    t.penup()
-    t.goto(0, 125)
-    t.pendown()
-    t.write("Welcome to the home menu!", align="center", font=("Arial", 30, "normal"))
-    t.penup()
-    # add a "play ai" button
-    # make a grey box with round corners for the button
-    t.goto(-50, -55)
-    t.pendown()
-    t.color("grey")
-    t.begin_fill()
-    for _ in range(2):
-        t.forward(100)
-        for i in range(90):
-            t.forward(0.1)
-            t.left(1)
-        t.forward(30)
-        for i in range(90):
-            t.forward(0.1)
-            t.left(1)
-    t.end_fill()
-    t.color("white")
-    t.penup()
-    t.goto(0, -50)
-    t.pendown()
-    t.write("Play AI", align="center", font=("Arial", 20, "normal"))
-    # add a "play friend" button
-    t.penup()
-    # make a grey box with round corners for the button
-    t.goto(-70, -105)
-    t.pendown()
-    t.color("grey")
-    t.begin_fill()
-    for _ in range(2):
-        t.forward(140)
-        for i in range(90):
-            t.forward(0.1)
-            t.left(1)
-        t.forward(30)
-        for i in range(90):
-            t.forward(0.1)
-            t.left(1)
-    t.end_fill()
-    t.color("white")
-    t.penup()
-    t.goto(0, -100)
-    t.pendown()
-    t.write("Play Friend", align="center", font=("Arial", 20, "normal"))
-    # add a "quit" button
-    t.penup()
-    # make a grey box with round corners for the button
-    t.goto(-35, -155)
-    t.pendown()
-    t.color("grey")
-    t.begin_fill()
-    for _ in range(2):
-        t.forward(70)
-        for i in range(90):
-            t.forward(0.1)
-            t.left(1)
-        t.forward(30)
-        for i in range(90):
-            t.forward(0.1)
-            t.left(1)
-    t.end_fill()
-    t.color("white")
-    t.penup()
-    t.goto(0, -150)
-    t.pendown()
-    t.write("Quit", align="center", font=("Arial", 20, "normal"))
+# make a grid of 8x8
+grid = [[0 for x in range(8)] for y in range(8)]
 
-    def check_mouse():
-        while True:
-            global canvas
-            canvas = t.getcanvas()
-            x = canvas.winfo_pointerx()
-            y = canvas.winfo_pointery()
-            x -= canvas.winfo_rootx()
-            y -= canvas.winfo_rooty()
+# make the white pieces list
+white_pieces = [
+    "Rook", "Knight", "Bishop", "Queen", "King", "Bishop", "Knight", "Rook",
+    "Pawn", "Pawn", "Pawn", "Pawn", "Pawn", "Pawn", "Pawn", "Pawn"
+]
 
-            #print(y, x)
+# make the black pieces list
+black_pieces = [
+    "Rook", "Knight", "Bishop", "Queen", "King", "Bishop", "Knight", "Rook",
+    "Pawn", "Pawn", "Pawn", "Pawn", "Pawn", "Pawn", "Pawn", "Pawn"
+]
 
-            if y > 423 and y < 423 + 40 and x > 429 and x < 429 + 110:
-                # make the mouse a hand
-                canvas.config(cursor="hand2")
-            elif y > 473 and y < 473 + 40 and x > 408 and x < 408 + 153:
-                # make the mouse a hand
-                canvas.config(cursor="hand2")
-            elif y > 523 and y < 523 + 40 and x > 443 and x < 443 + 80:
-                # make the mouse a hand
-                canvas.config(cursor="hand2")
-            else:
-                # make the mouse a normal arrow
-                canvas.config(cursor="arrow")
+# set the white pieces on the grid
+for i in range(8):
+    grid[0][i] = white_pieces[i]
+    grid[1][i] = white_pieces[i + 8]
+    
+# set the black pieces on the grid
+for i in range(8):
+    grid[7][i] = black_pieces[i]
+    grid[6][i] = black_pieces[i + 8]
+    
+# print the grid
+for i in range(8):
+    print(grid[i])
 
-            xx = 0
-            yy = 0
+# set the screen size
+screen = pygame.display.set_mode((800, 800))
 
-            # listen for mouse clicks
-            t.onscreenclick(get_pos)
+# set the title of the screen
+pygame.display.set_caption("Chess")
 
-            if xx != 0 and yy != 0:
-                xx -= canvas.winfo_rootx()
-                yy -= canvas.winfo_rooty()
+# set the background color
+screen.fill((255, 255, 255))
 
-                on_click(xx, yy)
+# set the color of the grid
+black = (0, 0, 0)
+white = (255, 255, 255)
 
-                xx = 0
-                yy = 0
+# set the width and height of the grid
+width = 100
+height = 100
 
-            # check if the main thread is still running
-            if not th.main_thread().is_alive():
-                break
+# set the margin between each cell
+margin = 1
 
-            time.sleep(0.1)
+# draw the grid
+for row in range(8):
+    for column in range(8):
+        if (row + column) % 2 == 0:
+            color = white
+        else:
+            color = black
+        pygame.draw.rect(screen, color, [(margin + width) * column + margin, (margin + height) * row + margin, width, height])
+        
+# update the screen
+pygame.display.flip()
 
-    # start the mouse checking thread
-    th.Thread(target=check_mouse).start()
-
-def on_click(x, y):
-    print(x, y)
-    # check if the user clicked on the "play ai" button
-    if y > 423 and y < 423 + 40 and x > 429 and x < 429 + 110:
-        # start the game
-        print("play ai")
-    # check if the user clicked on the "play friend" button
-    elif y > 473 and y < 473 + 40 and x > 408 and x < 408 + 153:
-        # start the game
-        print("play friend")
-    # check if the user clicked on the "quit" button
-    elif y > 523 and y < 523 + 40 and x > 443 and x < 443 + 80:
-        # quit the app
-        print("quit")
-        t.bye()
-
-def get_pos(x, y):
-    global xx, yy
-    xx = x - canvas.winfo_rootx()
-    yy = y - canvas.winfo_rooty()
-
-    print(xx, yy)
-
-if __name__ == "__main__":
-    # start the home menu as a thread called main_thread
-    th.Thread(target=home_menu, name="main_thread").start()
-    # start the turtle screen
-    t.mainloop()
+# keep the screen open
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+            
+# Path: main.py
