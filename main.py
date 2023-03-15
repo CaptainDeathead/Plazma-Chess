@@ -48,8 +48,61 @@ sprites = {
     "BlackBishop": pygame.image.load("Sprites/Black Bishop.png"),
     "BlackQueen": pygame.image.load("Sprites/Black Queen.png"),
     "BlackKing": pygame.image.load("Sprites/Black King.png"),
-    "BlackPawn": pygame.image.load("Sprites/Black Pawn.png")
+    "BlackPawn": pygame.image.load("Sprites/Black Pawn.png"),
+    "GreenSquare": pygame.image.load("Sprites/Moves Circle.png")
 }
+
+def check_moves(piece, row, column):
+    if piece == "WhitePawn":
+        for move in pawn_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "BlackPawn":
+        for move in pawn_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "WhiteRook":
+        for move in rook_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "BlackRook":
+        for move in rook_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "WhiteKnight":
+        for move in knight_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "BlackKnight":
+        for move in knight_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "WhiteBishop":
+        for move in bishop_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "BlackBishop":
+        for move in bishop_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "WhiteQueen":
+        for move in queen_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "BlackQueen":
+        for move in queen_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "WhiteKing":
+        for move in king_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    elif piece == "BlackKing":
+        for move in king_moves:
+            if grid[row + move[0]][column + move[1]] == "Empty":
+                screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+    else:
+        print("Error")
 
 # make the white pieces list
 white_pieces = [
@@ -61,6 +114,156 @@ white_pieces = [
 black_pieces = [
     "BlackPawn", "BlackPawn", "BlackPawn", "BlackPawn", "BlackPawn", "BlackPawn", "BlackPawn", "BlackPawn",
     "BlackRook", "BlackKnight", "BlackBishop", "BlackQueen", "BlackKing", "BlackBishop", "BlackKnight", "BlackRook"
+]
+
+pawn_moves = [
+    [0, 1],
+    [0, 2],
+    [1, 1],
+    [-1, 1]
+]
+
+rook_moves = [
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [0, 4],
+    [0, 5],
+    [0, 6],
+    [0, 7],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+    [4, 0],
+    [5, 0],
+    [6, 0],
+    [7, 0],
+    [-1, 0],
+    [-2, 0],
+    [-3, 0],
+    [-4, 0],
+    [-5, 0],
+    [-6, 0],
+    [-7, 0],
+    [0, -1],
+    [0, -2],
+    [0, -3],
+    [0, -4],
+    [0, -5],
+    [0, -6],
+    [0, -7]
+]
+
+knight_moves = [
+    [1, 2],
+    [2, 1],
+    [-1, 2],
+    [-2, 1],
+    [1, -2],
+    [2, -1],
+    [-1, -2],
+    [-2, -1]
+]
+
+bishop_moves = [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [4, 4],
+    [5, 5],
+    [6, 6],
+    [7, 7],
+    [-1, 1],
+    [-2, 2],
+    [-3, 3],
+    [-4, 4],
+    [-5, 5],
+    [-6, 6],
+    [-7, 7],
+    [1, -1],
+    [2, -2],
+    [3, -3],
+    [4, -4],
+    [5, -5],
+    [6, -6],
+    [7, -7],
+    [-1, -1],
+    [-2, -2],
+    [-3, -3],
+    [-4, -4],
+    [-5, -5],
+    [-6, -6],
+    [-7, -7]
+]
+
+queen_moves = [
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [0, 4],
+    [0, 5],
+    [0, 6],
+    [0, 7],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+    [4, 0],
+    [5, 0],
+    [6, 0],
+    [7, 0],
+    [-1, 0],
+    [-2, 0],
+    [-3, 0],
+    [-4, 0],
+    [-5, 0],
+    [-6, 0],
+    [-7, 0],
+    [0, -1],
+    [0, -2],
+    [0, -3],
+    [0, -4],
+    [0, -5],
+    [0, -6],
+    [0, -7],
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [4, 4],
+    [5, 5],
+    [6, 6],
+    [7, 7],
+    [-1, 1],
+    [-2, 2],
+    [-3, 3],
+    [-4, 4],
+    [-5, 5],
+    [-6, 6],
+    [-7, 7],
+    [1, -1],
+    [2, -2],
+    [3, -3],
+    [4, -4],
+    [5, -5],
+    [6, -6],
+    [7, -7],
+    [-1, -1],
+    [-2, -2],
+    [-3, -3],
+    [-4, -4],
+    [-5, -5],
+    [-6, -6],
+    [-7, -7]
+]
+
+king_moves = [
+    [0, 1],
+    [1, 1],
+    [1, 0],
+    [1, -1],
+    [0, -1],
+    [-1, -1],
+    [-1, 0],
+    [-1, 1]
 ]
 
 # set the white pieces on the grid
@@ -97,6 +300,6 @@ while True:
             column = pos[0] // (width + margin)
             row = pos[1] // (height + margin)
             # print the piece that was pressed
-            print(grid[row][column])
-            
-# Path: main.py
+            clicked = grid[row][column]
+            print(clicked)
+            check_moves(clicked, row, column)
