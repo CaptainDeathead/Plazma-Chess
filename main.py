@@ -76,7 +76,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     if piece == "WhitePawn":
         for move in white_pawn_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -87,7 +87,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "BlackPawn":
         for move in black_pawn_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -97,7 +97,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "WhiteRook":
         for move in rook_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -107,7 +107,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "BlackRook":
         for move in rook_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -117,7 +117,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "WhiteKnight":
         for move in knight_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -127,7 +127,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "BlackKnight":
         for move in knight_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -137,7 +137,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "WhiteBishop":
         for move in bishop_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -147,7 +147,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "BlackBishop":
         for move in bishop_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -157,7 +157,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "WhiteQueen":
         for move in queen_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -167,7 +167,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "BlackQueen":
         for move in queen_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -177,7 +177,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "WhiteKing":
         for move in king_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
@@ -187,7 +187,7 @@ def check_moves(piece, row, column, selected_piece, grid):
     elif piece == "BlackKing":
         for move in king_moves:
             try:
-                if grid[row + move[0]][column + move[1]] != "0":
+                if grid[row + move[0]][column + move[1]] == 0:
                     screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
                     # add the GreenSquare to the grid
                     grid[row + move[0]][column + move[1]] = "GreenSquare"
