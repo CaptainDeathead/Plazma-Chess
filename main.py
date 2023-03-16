@@ -73,6 +73,220 @@ sprites = {
 }
 
 def check_moves(piece, row, column, selected_piece, grid):
+    if piece == "WhitePawn":
+        for move in white_pawn_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+                elif "Black" in grid[row + move[0]][column + move[1]]:
+                    # draw a green square
+                    pygame.draw.rect(screen, (0, 255, 0), ((column + move[1]) * 100, (row + move[0]) * 100, 100, 100))
+                    selected_piece = row, column
+                    continue
+                else:
+                    continue
+            except IndexError:
+                continue   
+
+    elif piece == "BlackPawn":
+        for move in black_pawn_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+                elif "White" in grid[row + move[0]][column + move[1]]:
+                    # draw a green square
+                    pygame.draw.rect(screen, (0, 255, 0), ((column + move[1]) * 100, (row + move[0]) * 100, 100, 100))
+                    selected_piece = row, column
+                    continue
+                else:
+                    continue
+            except IndexError:
+                continue
+    elif piece == "WhiteRook":
+        for move in up_verticle_rook_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+                elif "Black" in grid[row + move[0]][column + move[1]]:
+                    # draw a green square
+                    pygame.draw.rect(screen, (0, 255, 0), ((column + move[1]) * 100, (row + move[0]) * 100, 100, 100))
+                    selected_piece = row, column
+                    break
+                else:
+                    break
+            except IndexError:
+                break
+        for move in down_verticle_rook_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+                elif "Black" in grid[row + move[0]][column + move[1]]:
+                    # draw a green square
+                    pygame.draw.rect(screen, (0, 255, 0), ((column + move[1]) * 100, (row + move[0]) * 100, 100, 100))
+                    selected_piece = row, column
+                    break
+                else:
+                    break
+            except IndexError:
+                break
+        for move in left_horizontal_rook_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+                elif "Black" in grid[row + move[0]][column + move[1]]:
+                    # draw a green square
+                    pygame.draw.rect(screen, (0, 255, 0), ((column + move[1]) * 100, (row + move[0]) * 100, 100, 100))
+                    selected_piece = row, column
+                    break
+                else:
+                    break
+            except IndexError:
+                break
+        for move in right_horizontal_rook_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+                elif "Black" in grid[row + move[0]][column + move[1]]:
+                    # draw a green square
+                    pygame.draw.rect(screen, (0, 255, 0), ((column + move[1]) * 100, (row + move[0]) * 100, 100, 100))
+                    selected_piece = row, column
+                    break
+                else:
+                    break
+            except IndexError:
+                break
+    elif piece == "BlackRook":
+        for move in rook_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+            except IndexError:
+                continue
+    elif piece == "WhiteKnight":
+        for move in knight_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+            except IndexError:
+                continue
+    elif piece == "BlackKnight":
+        for move in knight_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+            except IndexError:
+                continue
+    elif piece == "WhiteBishop":
+        for move in bishop_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+            except IndexError:
+                continue
+    elif piece == "BlackBishop":
+        for move in bishop_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+            except IndexError:
+                continue
+    elif piece == "WhiteQueen":
+        for move in queen_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+            except IndexError:
+                continue
+    elif piece == "BlackQueen":
+        for move in queen_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+            except IndexError:
+                continue
+    elif piece == "WhiteKing":
+        for move in king_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+            except IndexError:
+                continue
+    elif piece == "BlackKing":
+        for move in king_moves:
+            try:
+                if grid[row + move[0]][column + move[1]] == 0:
+                    screen.blit(sprites["GreenSquare"], ((column + move[1]) * 100, (row + move[0]) * 100))
+                    # add the GreenSquare to the grid
+                    grid[row + move[0]][column + move[1]] = "GreenSquare"
+                    selected_piece = row, column
+            except IndexError:
+                continue
+
+    elif piece == "GreenSquare":
+        # move the piece to the GreenSquare
+        grid[row][column] = grid[selected_piece[0]][selected_piece[1]]
+        grid[selected_piece[0]][selected_piece[1]] = 0
+
+        # reset the selected piece
+        selected_piece = (0, 0)
+
+        # reset the GreenSquares
+        for row in range(8):
+            for column in range(8):
+                if grid[row][column] == "GreenSquare":
+                    grid[row][column] = 0
+
+        for i in range(8):
+            print(grid[i])
+
+        # draw the grid
+        for row in range(8):
+            for column in range(8):
+                if (row + column) % 2 == 0:
+                    color = white
+                    
     if selected_piece == (0, 0):
         if piece == "WhitePawn":
             for move in white_pawn_moves:
@@ -426,41 +640,50 @@ black_pieces = [
 ]
 
 black_pawn_moves = [
-    [-1, 0],
-    [-2, 0],
     [-1, 1],
-    [-1, -1]
+    [-1, -1],
+    [-1, 0],
+    [-2, 0]
 ]
 
 white_pawn_moves = [
-    [1, 0],
-    [2, 0],
     [1, 1],
-    [1, -1]
+    [1, -1],
+    [1, 0],
+    [2, 0]
 ]
 
-rook_moves = [
-    [0, 1],
-    [0, 2],
-    [0, 3],
-    [0, 4],
-    [0, 5],
-    [0, 6],
-    [0, 7],
+up_verticle_rook_moves = [
     [1, 0],
     [2, 0],
     [3, 0],
     [4, 0],
     [5, 0],
     [6, 0],
-    [7, 0],
+    [7, 0]
+]
+
+down_verticle_rook_moves = [
     [-1, 0],
     [-2, 0],
     [-3, 0],
     [-4, 0],
     [-5, 0],
     [-6, 0],
-    [-7, 0],
+    [-7, 0]
+]
+
+left_horizontal_rook_moves = [
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [0, 4],
+    [0, 5],
+    [0, 6],
+    [0, 7]
+]
+
+right_horizontal_rook_moves = [
     [0, -1],
     [0, -2],
     [0, -3],
@@ -481,7 +704,7 @@ knight_moves = [
     [-2, -1]
 ]
 
-bishop_moves = [
+up_left_bishop_moves = [
     [1, 1],
     [2, 2],
     [3, 3],
@@ -489,20 +712,29 @@ bishop_moves = [
     [5, 5],
     [6, 6],
     [7, 7],
+]
+
+up_right_bishop_moves = [
     [-1, 1],
     [-2, 2],
     [-3, 3],
     [-4, 4],
     [-5, 5],
     [-6, 6],
-    [-7, 7],
+    [-7, 7]
+]
+
+down_left_bishop_moves = [
     [1, -1],
     [2, -2],
     [3, -3],
     [4, -4],
     [5, -5],
     [6, -6],
-    [7, -7],
+    [7, -7]
+]
+
+down_right_bishop_moves = [
     [-1, -1],
     [-2, -2],
     [-3, -3],
@@ -512,56 +744,27 @@ bishop_moves = [
     [-7, -7]
 ]
 
-queen_moves = [
-    [0, 1],
-    [0, 2],
-    [0, 3],
-    [0, 4],
-    [0, 5],
-    [0, 6],
-    [0, 7],
-    [1, 0],
-    [2, 0],
-    [3, 0],
-    [4, 0],
-    [5, 0],
-    [6, 0],
-    [7, 0],
-    [-1, 0],
-    [-2, 0],
-    [-3, 0],
-    [-4, 0],
-    [-5, 0],
-    [-6, 0],
-    [-7, 0],
-    [0, -1],
-    [0, -2],
-    [0, -3],
-    [0, -4],
-    [0, -5],
-    [0, -6],
-    [0, -7],
-    [1, 1],
-    [2, 2],
-    [3, 3],
-    [4, 4],
-    [5, 5],
-    [6, 6],
-    [7, 7],
+up_right_queen_moves = [
     [-1, 1],
     [-2, 2],
     [-3, 3],
     [-4, 4],
     [-5, 5],
     [-6, 6],
-    [-7, 7],
-    [1, -1],
-    [2, -2],
-    [3, -3],
-    [4, -4],
-    [5, -5],
-    [6, -6],
-    [7, -7],
+    [-7, 7]
+]
+
+up_left_queen_moves = [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [4, 4],
+    [5, 5],
+    [6, 6],
+    [7, 7]
+]
+
+down_right_queen_moves = [
     [-1, -1],
     [-2, -2],
     [-3, -3],
@@ -569,6 +772,56 @@ queen_moves = [
     [-5, -5],
     [-6, -6],
     [-7, -7]
+]
+
+down_left_queen_moves = [
+    [1, -1],
+    [2, -2],
+    [3, -3],
+    [4, -4],
+    [5, -5],
+    [6, -6],
+    [7, -7]
+]
+
+up_verticle_queen_moves = [
+    [1, 0],
+    [2, 0],
+    [3, 0],
+    [4, 0],
+    [5, 0],
+    [6, 0],
+    [7, 0]
+]
+
+down_verticle_queen_moves = [
+    [-1, 0],
+    [-2, 0],
+    [-3, 0],
+    [-4, 0],
+    [-5, 0],
+    [-6, 0],
+    [-7, 0]
+]
+
+left_horizontal_queen_moves = [
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [0, 4],
+    [0, 5],
+    [0, 6],
+    [0, 7]
+]
+
+right_horizontal_queen_moves = [
+    [0, -1],
+    [0, -2],
+    [0, -3],
+    [0, -4],
+    [0, -5],
+    [0, -6],
+    [0, -7]
 ]
 
 king_moves = [
