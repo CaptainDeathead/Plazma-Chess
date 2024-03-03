@@ -7,10 +7,10 @@ class Board:
                       [7, 7, 7, 7, 7, 7, 7, 7],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 2, 0, 0, 0, 0],
+                      [0, 0, 0, 6, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [1, 1, 1, 1, 1, 1, 1, 1],
-                      [4, 2, 3, 5, 6, 3, 2, 4]]
+                      [4, 2, 3, 5, 0, 3, 2, 4]]
         
     def pieceAt(self, pos):
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
@@ -242,6 +242,21 @@ class Engine:
 
         return moves
 
+    def generateKingMoves(self, pos):
+        moves = []
+        if self.turn == 0:
+            for y in range(-1, 2):
+                for x in range(-1, 2):
+                    piece = self.board.pieceAt((pos[0]+x, pos[1]+y))[1]
+                    if piece == 0 or piece > 6: moves.append((pos[0]+x, pos[1]+y))
+        elif self.turn == 1:
+            for y in range(-1, 2):
+                for x in range(-1, 2):
+                    piece = self.board.pieceAt((pos[0]+x, pos[1]+y))[1]
+                    if piece == 0 or piece < 7: moves.append((pos[0]+x, pos[1]+y))
+
+        return moves
+
     def generateMoves(self, pos):
         moves = []
         piece = self.board.board[pos[1]][pos[0]]
@@ -265,63 +280,7 @@ class Engine:
             moves.extend(self.generateDiagonalMoves(pos))
 
         elif piece == 6 or piece == 12: # king
-            # forward
-            if pos[1] > 0:
-                # forward-left
-                if pos[0] > 0:
-                    col = self.board.pieceAt((pos[0]-1, pos[1]-1))
-                    if col[0]:
-                        if col[1] > 6: moves.append((pos[0]-1, pos[1]-1))
-                    else: moves.append((pos[0]-1, pos[1]-1))
-                
-                # forward
-                col = self.board.pieceAt((pos[0], pos[1]-1))
-                if col[0]:
-                    if col[1] > 6: moves.append((pos[0], pos[1]-1))
-                else: moves.append((pos[0], pos[1]-1))
-
-                # forward-right
-                if pos[0] < 7:
-                    col = self.board.pieceAt((pos[0]+1, pos[1]-1))
-                    if col[0]:
-                        if col[1] > 6: moves.append((pos[0]+1, pos[1]-1))
-                    else: moves.append((pos[0]+1, pos[1]-1))
-
-            # middle-left
-            if pos[0] > 0:
-                col = self.board.pieceAt((pos[0]-1, pos[1]))
-                if col[0]:
-                    if col[1] > 6: moves.append((pos[0]-1, pos[1]))
-                else: moves.append((pos[0]-1, pos[1]))
-
-            # middle-right
-            if pos[0] < 7:
-                col = self.board.pieceAt((pos[0]+1, pos[1]))
-                if col[0]:
-                    if col[1] > 6: moves.append((pos[0]+1, pos[1]))
-                else: moves.append((pos[0]+1, pos[1]))
-
-            # back
-            if pos[1] < 7:
-                # back-left
-                if pos[0] > 0:
-                    col = self.board.pieceAt((pos[0]-1, pos[1]+1))
-                    if col[0]:
-                        if col[1] > 6: moves.append((pos[0]-1, pos[1]+1))
-                    else: moves.append((pos[0]-1, pos[1]+1))
-                
-                # back
-                col = self.board.pieceAt((pos[0], pos[1]+1))
-                if col[0]:
-                    if col[1] > 6: moves.append((pos[0], pos[1]+1))
-                else: moves.append((pos[0], pos[1]+1))
-
-                # back-right
-                if pos[0] < 7:
-                    col = self.board.pieceAt((pos[0]+1, pos[1]+1))
-                    if col[0]:
-                        if col[1] > 6: moves.append((pos[0]+1, pos[1]+1))
-                    else: moves.append((pos[0]+1, pos[1]+1))
+            moves.extend(self.generateKingMoves(pos))
 
         ogBoard = copy.deepcopy(self.board.board)
 
