@@ -7,7 +7,7 @@ class Board:
                       [7, 7, 7, 7, 7, 7, 7, 7],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 2, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [1, 1, 1, 1, 1, 1, 1, 1],
                       [4, 2, 3, 5, 6, 3, 2, 4]]
@@ -86,8 +86,7 @@ class Engine:
             for y in range(-1, 2):
                 for x in range(-1, 2):
                     if self.board.pieceAt((king[0]+x, king[1]+y))[1] == 12: return True
-
-        if turn == 1:
+        elif turn == 1:
             for y in range(-1, 2):
                 for x in range(-1, 2):
                     if self.board.pieceAt((king[0]+x, king[1]+y))[1] == 6: return True
@@ -121,6 +120,29 @@ class Engine:
                     if col[0] and col[1] < 7: moves.append((pos[0]+1, pos[1]+1)) # 1 capture forward-right
         
         return moves
+
+    def generateKnightMoves(self, pos):
+        moves = []
+
+        moves.append((pos[0]-1, pos[1]-2))
+        moves.append((pos[0]+1, pos[1]-2))
+        moves.append((pos[0]+2, pos[1]-1))
+        moves.append((pos[0]+2, pos[1]+1))
+        moves.append((pos[0]+1, pos[1]+2))
+        moves.append((pos[0]-1, pos[1]+2))
+        moves.append((pos[0]-2, pos[1]+1))
+        moves.append((pos[0]-2, pos[1]-1))
+
+        newMoves = []
+        for move in moves:
+            if move[0] < 0 or move[0] > 7 or move[1] < 0 or move[1] > 7: continue
+            
+            piece = self.board.pieceAt(move)[1]
+            if self.turn == 0 and piece > 6: newMoves.append(move)
+            elif self.turn == 1 and piece < 7: newMoves.append(move)
+            elif piece == 0: newMoves.append(move)
+        
+        return newMoves
 
     def generateSlidingMoves(self, pos):
         moves = []
@@ -229,50 +251,20 @@ class Engine:
         elif piece == 1 or piece == 7: # pawn
             moves.extend(self.generatePawnMoves(pos))
 
-        elif piece == 2: # white knight
-            # forward
-            if pos[1] > 1:
-                # forward-left
-                if pos[0] > 0:
-                    col = self.board.pieceAt((pos[0]-1, pos[1]-2))
-                    if col[0]:
-                        if col[1] > 6: moves.append((pos[0]-1, pos[1]-2))
-                    else: moves.append((pos[0]-1, pos[1]-2))
+        elif piece == 2 or piece == 8: # knight
+            moves.extend(self.generateKnightMoves(pos))
 
-                # forward-right
-                if pos[0] < 7:
-                    col = self.board.pieceAt((pos[0]+1, pos[1]-2))
-                    if col[0]:
-                        if col[1] > 6: moves.append((pos[0]+1, pos[1]-2))
-                    else: moves.append((pos[0]+1, pos[1]-2))
-
-            # back
-            if pos[1] < 6:
-                # back-left
-                if pos[0] > 0:
-                    col = self.board.pieceAt((pos[0]-1, pos[1]+2))
-                    if col[0]:
-                        if col[1] > 6: moves.append((pos[0]-1, pos[1]+2))
-                    else: moves.append((pos[0]-1, pos[1]+2))
-
-                # back-right
-                if pos[0] < 7:
-                    col = self.board.pieceAt((pos[0]+1, pos[1]+2))
-                    if col[0]:
-                        if col[1] > 6: moves.append((pos[0]+1, pos[1]+2))
-                    else: moves.append((pos[0]+1, pos[1]+2))
-
-        elif piece == 3: # white bishop
+        elif piece == 3 or piece == 9: # bishop
             moves.extend(self.generateDiagonalMoves(pos))
 
-        elif piece == 4: # white rook
+        elif piece == 4 or piece == 10: # rook
             moves.extend(self.generateSlidingMoves(pos))
 
-        elif piece == 5: # white queen
+        elif piece == 5 or piece == 11: # queen
             moves.extend(self.generateSlidingMoves(pos))
             moves.extend(self.generateDiagonalMoves(pos))
 
-        elif piece == 6: # white king
+        elif piece == 6 or piece == 12: # king
             # forward
             if pos[1] > 0:
                 # forward-left
