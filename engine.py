@@ -5,7 +5,7 @@ class Board:
     def __init__(self):
         self.board = [[10, 8, 9, 11, 12, 9, 8, 10],
                       [7, 7, 7, 7, 7, 7, 7, 7],
-                      [0, 0, 9, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0, 0],
                       [0, 1, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 6, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
@@ -42,23 +42,43 @@ class Engine:
 
         diagonal = self.generateDiagonalMoves(king)
         for pos in diagonal:
-            #if king[0]-pos[0] == 1 or king[0]-pos[0] == -1: continue
             if self.board.board[pos[1]][pos[0]] == 9 and turn == 0: return True
             elif self.board.board[pos[1]][pos[0]] == 3 and turn == 1: return True
 
+        sliding = self.generateSlidingMoves(king)
+        for pos in sliding:
+            if self.board.board[pos[1]][pos[0]] == 10 and turn == 0: return True
+            elif self.board.board[pos[1]][pos[0]] == 4 and turn == 1: return True
+
     def generatePawnMoves(self, pos):
         moves = []
-        if pos[1] == 6 and not self.board.pieceAt((pos[0], 4))[0]: moves.append((pos[0], 4)) # 2 spaces forward
 
-        if pos[1] > 0:
-            if not self.board.pieceAt((pos[0], pos[1]-1))[0]: moves.append((pos[0], pos[1]-1)) # 1 space forward
-            
-            if pos[0] > 0:
-                col = self.board.pieceAt((pos[0]-1, pos[1]-1))
-                if col[0] and col[1] > 6: moves.append((pos[0]-1, pos[1]-1)) # 1 capture forward-left
-            if pos[0] < 7:
-                col = self.board.pieceAt((pos[0]+1, pos[1]-1))
-                if col[0] and col[1] > 6: moves.append((pos[0]+1, pos[1]-1)) # 1 capture forward-right
+        if self.turn == 0:
+            if pos[1] == 6 and not self.board.pieceAt((pos[0], 4))[0]: moves.append((pos[0], 4)) # 2 spaces forward
+
+            if pos[1] > 0:
+                if not self.board.pieceAt((pos[0], pos[1]-1))[0]: moves.append((pos[0], pos[1]-1)) # 1 space forward
+                
+                if pos[0] > 0:
+                    col = self.board.pieceAt((pos[0]-1, pos[1]-1))
+                    if col[0] and col[1] > 6: moves.append((pos[0]-1, pos[1]-1)) # 1 capture forward-left
+                if pos[0] < 7:
+                    col = self.board.pieceAt((pos[0]+1, pos[1]-1))
+                    if col[0] and col[1] > 6: moves.append((pos[0]+1, pos[1]-1)) # 1 capture forward-right
+        else:
+            if pos[1] == 1 and not self.board.pieceAt((pos[0], 3))[0]: moves.append((pos[0], 3)) # 2 spaces forward
+
+            if pos[1] < 7:
+                if not self.board.pieceAt((pos[0], pos[1]+1))[0]: moves.append((pos[0], pos[1]+1)) # 1 space forward
+                
+                if pos[0] > 0:
+                    col = self.board.pieceAt((pos[0]-1, pos[1]+1))
+                    if col[0] and col[1] < 7: moves.append((pos[0]-1, pos[1]+1)) # 1 capture forward-left
+                if pos[0] < 7:
+                    col = self.board.pieceAt((pos[0]+1, pos[1]+1))
+                    if col[0] and col[1] < 7: moves.append((pos[0]+1, pos[1]+1)) # 1 capture forward-right
+        
+        return moves
 
     def generateSlidingMoves(self, pos):
         moves = []
@@ -163,8 +183,10 @@ class Engine:
         piece = self.board.board[pos[1]][pos[0]]
 
         if piece == 0: raise Exception(f"No valid piece found at ({pos[0]}, {pos[1]})!")
-        elif piece == 1: # white pawn
-                    
+
+        elif piece == 1 or piece == 7: # pawn
+            moves.extend(self.generatePawnMoves(pos))
+
         elif piece == 2: # white knight
             # forward
             if pos[1] > 1:
