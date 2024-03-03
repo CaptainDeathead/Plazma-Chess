@@ -6,13 +6,14 @@ class Board:
         self.board = [[10, 8, 9, 11, 12, 9, 8, 10],
                       [7, 7, 7, 7, 7, 7, 7, 7],
                       [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 1, 0, 11, 0, 0, 0, 0],
+                      [0, 1, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 6, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [1, 1, 1, 1, 1, 1, 1, 1],
                       [4, 2, 3, 5, 0, 3, 2, 4]]
         
     def pieceAt(self, pos):
+        if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
         piece = self.board[pos[1]][pos[0]]
         if piece != 0: return (True, piece)
         else: return (False, 0)
@@ -59,6 +60,26 @@ class Engine:
         else:
             if self.board.pieceAt((king[0]-1, king[1]+1))[1] == 1: return True
             elif self.board.pieceAt((king[0]+1, king[1]+1))[1] == 1: return True
+
+        # knight
+        if turn == 0:
+            if self.board.pieceAt((king[0]-1, king[1]-2))[1] > 6: return True
+            elif self.board.pieceAt((king[0]+1, king[1]-2))[1] > 6: return True
+            elif self.board.pieceAt((king[0]+2, king[1]-1))[1] > 6: return True
+            elif self.board.pieceAt((king[0]+2, king[1]+1))[1] > 6: return True
+            elif self.board.pieceAt((king[0]+1, king[1]+2))[1] > 6: return True
+            elif self.board.pieceAt((king[0]-1, king[1]+2))[1] > 6: return True
+            elif self.board.pieceAt((king[0]-2, king[1]+1))[1] > 6: return True
+            elif self.board.pieceAt((king[0]-2, king[1]-1))[1] > 6: return True
+        elif turn == 1:
+            if self.board.pieceAt((king[0]-1, king[1]-2))[1] < 7: return True
+            elif self.board.pieceAt((king[0]+1, king[1]-2))[1] < 7: return True
+            elif self.board.pieceAt((king[0]+2, king[1]-1))[1] < 7: return True
+            elif self.board.pieceAt((king[0]+2, king[1]+1))[1] < 7: return True
+            elif self.board.pieceAt((king[0]+1, king[1]+2))[1] < 7: return True
+            elif self.board.pieceAt((king[0]-1, king[1]+2))[1] < 7: return True
+            elif self.board.pieceAt((king[0]-2, king[1]+1))[1] < 7: return True
+            elif self.board.pieceAt((king[0]-2, king[1]-1))[1] < 7: return True
 
     def generatePawnMoves(self, pos):
         moves = []
