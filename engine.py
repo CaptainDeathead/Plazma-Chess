@@ -6,7 +6,7 @@ class Board:
         self.board = [[10, 8, 9, 11, 12, 9, 8, 10],
                       [7, 7, 7, 7, 7, 7, 7, 7],
                       [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 1, 0, 9, 0, 0, 0, 0],
+                      [0, 1, 0, 11, 0, 0, 0, 0],
                       [0, 0, 0, 0, 6, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [1, 1, 1, 1, 1, 1, 1, 1],
@@ -42,13 +42,15 @@ class Engine:
 
         diagonal = self.generateDiagonalMoves(king)
         for pos in diagonal:
-            if self.board.board[pos[1]][pos[0]] == 9 and turn == 0: return True
-            elif self.board.board[pos[1]][pos[0]] == 3 and turn == 1: return True
+            piece = self.board.board[pos[1]][pos[0]]
+            if (piece == 9 or piece == 11) and turn == 0: return True
+            elif (piece == 3 or piece == 5) and turn == 1: return True
 
         sliding = self.generateSlidingMoves(king)
         for pos in sliding:
-            if self.board.board[pos[1]][pos[0]] == 10 and turn == 0: return True
-            elif self.board.board[pos[1]][pos[0]] == 4 and turn == 1: return True
+            piece = self.board.board[pos[1]][pos[0]]
+            if (piece == 10 or piece == 11) and turn == 0: return True
+            elif (piece == 4 or piece == 5) and turn == 1: return True
 
         # pawn
         if turn == 0:
