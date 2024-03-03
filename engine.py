@@ -6,7 +6,7 @@ class Board:
         self.board = [[10, 8, 9, 11, 12, 9, 8, 10],
                       [7, 7, 7, 7, 7, 7, 7, 7],
                       [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 1, 0, 0, 0, 0, 0, 0],
+                      [0, 1, 0, 9, 0, 0, 0, 0],
                       [0, 0, 0, 0, 6, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [1, 1, 1, 1, 1, 1, 1, 1],
@@ -15,7 +15,7 @@ class Board:
     def pieceAt(self, pos):
         piece = self.board[pos[1]][pos[0]]
         if piece != 0: return (True, piece)
-        else: return (False, None)
+        else: return (False, 0)
 
 class Engine:
     def __init__(self):
@@ -49,6 +49,14 @@ class Engine:
         for pos in sliding:
             if self.board.board[pos[1]][pos[0]] == 10 and turn == 0: return True
             elif self.board.board[pos[1]][pos[0]] == 4 and turn == 1: return True
+
+        # pawn
+        if turn == 0:
+            if self.board.pieceAt((king[0]-1, king[1]-1))[1] == 7: return True
+            elif self.board.pieceAt((king[0]+1, king[1]-1))[1] == 7: return True
+        else:
+            if self.board.pieceAt((king[0]-1, king[1]+1))[1] == 1: return True
+            elif self.board.pieceAt((king[0]+1, king[1]+1))[1] == 1: return True
 
     def generatePawnMoves(self, pos):
         moves = []
