@@ -4,13 +4,16 @@ import utils
 class Board:
     def __init__(self):
         self.board = [[10, 8, 9, 11, 12, 9, 8, 10],
-                      [7, 7, 7, 7, 7, 7, 7, 7],
+                      [7, 7, 0, 7, 7, 7, 7, 7],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 6, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
-                      [1, 1, 1, 1, 1, 1, 1, 1],
-                      [4, 2, 3, 5, 0, 3, 2, 4]]
+                      [0, 0, 0, 0, 0, 0, 0, 0],
+                      [1, 1, 0, 1, 1, 1, 1, 1],
+                      [4, 0, 0, 0, 6, 3, 2, 4]]
+        
+        self.whiteCastling = [True, True]
+        self.blackCastling = [True, True]
         
     def pieceAt(self, pos):
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
@@ -25,21 +28,77 @@ class Engine:
         self.turn = 0
 
     def move(self, pos, newPos):
-        if newPos in self.generateMoves(pos):
-            self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
-            self.board.board[pos[1]][pos[0]] = 0
+        moves = self.generateMoves(pos)
+
+        # castling
+        if pos == (4, 0) or pos == (4, 7):
+            if (12, 17) in moves or (16, 17) in moves:
+                if newPos == (2, 7): newPos = (12, 17)
+                elif newPos == (6, 7): newPos = (16, 17)
+            elif (12, 10) in moves or (16, 10) in moves:
+                if newPos == (2, 0): newPos = (12, 10)
+                elif newPos == (6, 0): newPos = (16, 10)
+
+        if newPos in moves:
+            if newPos[1] == 17:
+                if newPos[0] == 12:
+                    yRank = abs(self.turn-1)*7
+                    self.board.board[yRank][4] = 0 # king empty
+                    self.board.board[yRank][3] = 4 # rook
+                    self.board.board[yRank][2] = 6 # king
+                    self.board.board[yRank][0] = 0 # rook empty
+                elif newPos[0] == 16:
+                    yRank = abs(self.turn-1)*7
+                    self.board.board[yRank][4] = 0 # king empty
+                    self.board.board[yRank][5] = 4 # rook
+                    self.board.board[yRank][6] = 6 # king
+                    self.board.board[yRank][7] = 0 # rook empty
+            elif newPos[1] == 10:
+                if newPos[0] == 12:
+                    yRank = abs(self.turn-1)*7
+                    self.board.board[yRank][4] = 0 # king empty
+                    self.board.board[yRank][3] = 10 # rook
+                    self.board.board[yRank][2] = 12 # king
+                    self.board.board[yRank][0] = 0 # rook empty
+                elif newPos[0] == 16:
+                    yRank = abs(self.turn-1)*7
+                    self.board.board[yRank][4] = 0 # king empty
+                    self.board.board[yRank][5] = 10 # rook
+                    self.board.board[yRank][6] = 12 # king
+                    self.board.board[yRank][7] = 0 # rook empty
+            else:
+                piece = self.board.pieceAt((pos[0], pos[1]))
+
+                # set castling states
+                if piece == 4:
+                    if pos[0] == 0: self.board.whiteCastling[0] = False
+                    elif pos[0] == 7: self.board.whiteCastling[1] = False
+
+                elif piece == 6: self.board.whiteCastling = [False, False]
+
+                elif piece == 10:
+                    if pos[0] == 0: self.board.blackCastling[0] = False
+                    elif pos[0] == 7: self.board.blackCastling[1] = False
+
+                elif piece == 11: self.board.blackCastling = [False, False]
+
+                self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
+                self.board.board[pos[1]][pos[0]] = 0
         else: raise Exception("Illegal move!")
 
     def __moveWithoutCheck(self, pos, newPos):
         self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
         self.board.board[pos[1]][pos[0]] = 0
 
-    def inCheck(self, turn):
-        king = None
-        for y in range(8):
-            for x in range(8):
-                if turn == 0 and self.board.board[y][x] == 6: king = (x, y)
-                elif turn == 1 and self.board.board[y][x] == 12: king = (x, y)
+    def inCheck(self, turn, square=None):
+        if square == None:
+            king = None
+            for y in range(8):
+                for x in range(8):
+                    piece = self.board.board[y][x]
+                    if turn == 0 and self.board.board[y][x] == 6: king = (x, y)
+                    elif turn == 1 and self.board.board[y][x] == 12: king = (x, y)
+        else: king = square
 
         diagonal = self.generateDiagonalMoves(king)
         for pos in diagonal:
@@ -246,14 +305,54 @@ class Engine:
         moves = []
         if self.turn == 0:
             for y in range(-1, 2):
+                if pos[1]+y > 7 or pos[1]+y < 0: break
                 for x in range(-1, 2):
                     piece = self.board.pieceAt((pos[0]+x, pos[1]+y))[1]
                     if piece == 0 or piece > 6: moves.append((pos[0]+x, pos[1]+y))
+
+            # castling
+            if self.board.whiteCastling[0]:
+                check = False
+                for i in range(2, 4): # only go to index 2
+                    check = self.inCheck(self.turn, (i, 7))
+                    if self.board.pieceAt((i, 7))[0]: check = True
+                    if check: break
+
+                if not check: moves.append((12, 17))
+
+            if self.board.whiteCastling[1]:
+                check = False
+                for i in range(5, 7): # only go to index 2
+                    check = self.inCheck(self.turn, (i, 7))
+                    if self.board.pieceAt((i, 7))[0]: check = True
+                    if check: break
+
+                if not check: moves.append((16, 17))
+
         elif self.turn == 1:
             for y in range(-1, 2):
                 for x in range(-1, 2):
                     piece = self.board.pieceAt((pos[0]+x, pos[1]+y))[1]
                     if piece == 0 or piece < 7: moves.append((pos[0]+x, pos[1]+y))
+
+            # castling
+            if self.board.blackCastling[0]:
+                check = False
+                for i in range(2, 4): # only go to index 2
+                    check = self.inCheck(self.turn, (i, 0))
+                    if self.board.pieceAt((i, 0))[0]: check = True
+                    if check: break
+
+                if not check: moves.append((12, 10))
+
+            if self.board.blackCastling[1]:
+                check = False
+                for i in range(5, 7): # only go to index 2
+                    check = self.inCheck(self.turn, (i, 0))
+                    if self.board.pieceAt((i, 0))[0]: check = True
+                    if check: break
+
+                if not check: moves.append((16, 10))
 
         return moves
 
@@ -286,6 +385,11 @@ class Engine:
 
         newMoves = []
         for move in moves:
+            # castling
+            if move[1] > 7:
+                newMoves.append(move)
+                continue
+
             self.__moveWithoutCheck(pos, move)
             if not self.inCheck(self.turn): newMoves.append(move)
             self.board.board = copy.deepcopy(ogBoard)

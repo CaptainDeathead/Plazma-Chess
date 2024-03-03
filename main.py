@@ -22,7 +22,11 @@ class Window:
                 else: pg.draw.rect(self.screen, (50, 50, 50), (y*100, x*100, 100, 100))
                 isWhite = not isWhite
 
-        for move in self.validMoves: pg.draw.rect(self.screen, (255, 100, 100), (move[0]*100, move[1]*100, 100, 100))
+        for move in self.validMoves:
+            if move[1] > 7:
+                pg.draw.rect(self.screen, (255, 100, 100), ((move[0]-10)*100, (move[1]-10)*100, 100, 100))
+                continue
+            pg.draw.rect(self.screen, (255, 100, 100), (move[0]*100, move[1]*100, 100, 100))
         if self.selectedSquare != None: pg.draw.rect(self.screen, (255, 0, 0), (self.selectedSquare[0]*100, self.selectedSquare[1]*100, 100, 100))
 
     def drawPieces(self):
