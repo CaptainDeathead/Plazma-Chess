@@ -1,5 +1,29 @@
 PIECE_UNICODES = {0: ' ', 1: '♟︎', 2: '♞', 3: '♝', 4: '♜', 5: '♛', 6: '♚', 7: '♟︎', 8: '♞', 9: '♝', 10: '♜', 11: '♛', 12: '♚'}
 
+PIECE_VALUES = {
+    'pawn': 100,
+    'knight': 300,
+    'bishop': 350,
+    'rook': 600,
+    'queen': 900,
+    'king': 10000
+}
+
+PIECE_NAMES = {
+    1: 'pawn',
+    2: 'knight',
+    3: 'bishop',
+    4: 'rook',
+    5: 'queen',
+    6: 'king',
+    7: 'pawn',
+    8: 'knight',
+    9: 'bishop',
+    10: 'rook',
+    11: 'queen',
+    12: 'king'
+}
+
 ESC = '\x1b'
 WHITE_BG  = ESC + '[47m'
 BLACK_BG  = ESC + '[40m'
