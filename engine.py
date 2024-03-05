@@ -84,7 +84,28 @@ class Engine:
 
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
                 self.board.board[pos[1]][pos[0]] = 0
+            
         else: raise Exception("Illegal move!")
+
+        # check detection
+        self.turn = not self.turn
+        
+        moves = []
+
+        for y in range(8):
+            for x in range(8):
+                if self.board.board[y][x] == 0: continue
+                elif self.board.board[y][x] < 7 and self.turn == 0: moves.append(self.generateMoves((x, y)))
+                elif self.board.board[y][x] > 6 and self.turn == 1: moves.append(self.generateMoves((x, y)))
+
+        self.turn = not self.turn
+
+        newMoves = []
+        for move in moves:
+            if move != (): newMoves.append(move)
+
+        if newMoves == []: return 1
+        else: return 0
 
     def __moveWithoutCheck(self, pos, newPos):
         self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
@@ -305,8 +326,9 @@ class Engine:
         moves = []
         if self.turn == 0:
             for y in range(-1, 2):
-                if pos[1]+y > 7 or pos[1]+y < 0: break
+                if pos[1]+y > 7 or pos[1]+y < 0: continue
                 for x in range(-1, 2):
+                    if pos[0]+x > 7 or pos[0]+x < 0: continue
                     piece = self.board.pieceAt((pos[0]+x, pos[1]+y))[1]
                     if piece == 0 or piece > 6: moves.append((pos[0]+x, pos[1]+y))
 
@@ -331,7 +353,9 @@ class Engine:
 
         elif self.turn == 1:
             for y in range(-1, 2):
+                if pos[1]+y > 7 or pos[1]+y < 0: continue
                 for x in range(-1, 2):
+                    if pos[0]+x > 7 or pos[0]+x < 0: continue
                     piece = self.board.pieceAt((pos[0]+x, pos[1]+y))[1]
                     if piece == 0 or piece < 7: moves.append((pos[0]+x, pos[1]+y))
 

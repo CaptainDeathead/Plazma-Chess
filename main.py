@@ -70,6 +70,10 @@ class MainMenu:
                                     exit()
                                 else:
                                     self.url, self.color = response.text.split(', ')
+                                    return
+
+                            elif self.selected == 0:
+                                return
 
             self.screen.blit(self.titleLbl, (1200/2-200, 150))
             self.screen.blit(self.selectedLbl, (1200/2-150, 300))
@@ -141,7 +145,7 @@ class Window:
     def run(self):
         mainMenu = MainMenu(self.screen)
         mainMenu.run()
-        self.gamemode = self.selected
+        self.gamemode = mainMenu.selected
 
         clock = pg.time.Clock()
         while 1:
@@ -175,7 +179,13 @@ class Window:
                     if event.button == 1:
                         pos = pg.mouse.get_pos()
                         if pos[0] < 800 and pos[1] < 800:
-                            try: self.engine.move(self.selectedSquare, (int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0))))
+                            try:
+                                move = self.engine.move(self.selectedSquare, (int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0))))
+                                if move == 1:
+                                    if self.engine.turn == 0: print("White wins!!!")
+                                    else: print("Black wins!!!")
+                                    pg.quit()
+                                    return
                             except: self.engine.turn = not self.engine.turn
                         self.validMoves = ()
                         self.selectedSquare = None
