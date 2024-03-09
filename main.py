@@ -5,6 +5,8 @@ from bot import Bot
 from pygameGui import Button
 import requests
 import time
+from copy import deepcopy
+import asyncio
 
 pg.init()
 
@@ -30,10 +32,10 @@ class MainMenu:
         
         self.buttons[0].clicked = True
 
-        self.url = None
+        self.gameIndex = None
         self.color = None
 
-    def run(self):
+    async def run(self):
         clock = pg.time.Clock()
 
         while 1:
@@ -60,7 +62,7 @@ class MainMenu:
                                 self.screen.fill((0, 0, 0))
                                 self.screen.blit(self.arial60.render("Finding server...", True, (255, 255, 255)), (100, 100))
                                 pg.display.flip()
-                                response = requests.get('http://captaindeathead.pythonanywhere.com/chess/findGame')
+                                response = requests.get('http://127.0.0.1:5000/chess/findGame')
                                 if str(response.status_code)[0] == '4': # 400 error codes
                                     self.screen.fill((0, 0, 0))
                                     self.screen.blit(self.arial60.render("Network Error! Exiting in 3 seconds...", True, (255, 255, 255)), (100, 100))
@@ -69,7 +71,24 @@ class MainMenu:
                                     pg.quit()
                                     exit()
                                 else:
-                                    self.url, self.color = response.text.split(', ')
+                                    self.gameIndex, self.color, self.playerId = response.text.split(', ')
+                                    
+                                    self.screen.fill((0, 0, 0))
+                                    self.screen.blit(self.arial60.render("Waiting for an oppenent...", True, (255, 255, 255)), (100, 100))
+                                    pg.display.flip()
+                                    
+                                    clock = pg.time.Clock()
+                                    while 1:
+                                        for event in pg.event.get():
+                                            if event.type == pg.QUIT:
+                                                requests.get(f'http://127.0.0.1:5000/chess/leaveGame?gameIndex={self.gameIndex}')
+                                                pg.quit()
+                                                exit()
+
+                                        start = requests.get(f'http://127.0.0.1:5000/chess/gameStart?gameIndex={self.gameIndex}').text
+                                        if bool(int(start)): break
+                                        
+                                        clock.tick(0.5)
                                     return
 
                             elif self.selected == 0:
@@ -84,6 +103,7 @@ class MainMenu:
 
             clock.tick(60)
             pg.display.flip()
+            await asyncio.sleep(0)
 
 class ControlPanel:
     def __init__(self):
@@ -125,10 +145,12 @@ class Window:
             pg.draw.rect(self.screen, (255, 100, 100), (move[0]*100, move[1]*100, 100, 100))
         if self.selectedSquare != None: pg.draw.rect(self.screen, (255, 0, 0), (self.selectedSquare[0]*100, self.selectedSquare[1]*100, 100, 100))
 
-    def drawPieces(self):
+    def drawPieces(self, reverse=False):
+        reverseBoard = deepcopy(self.engine.board.board).reverse()
         for y in range(8):
             for x in range(8):
-                piece = self.engine.board.board[y][x]
+                if reverse: piece = reverseBoard[y][x]
+                else: piece = self.engine.board.board[y][x]
                 if piece < 7:
                     if self.selectedSquare == (x, y):
                         pos = pg.mouse.get_pos()
@@ -142,10 +164,14 @@ class Window:
                     else:
                         self.screen.blit(self.pieceFont.render(utils.PIECE_UNICODES[self.engine.board.board[y][x]], True, (0, 0, 0)), (x*100, y*100-20))
 
-    def run(self):
+    async def run(self):
         mainMenu = MainMenu(self.screen)
-        mainMenu.run()
+        await mainMenu.run()
         self.gamemode = mainMenu.selected
+
+        if self.gamemode == 2:
+            self.color = int(mainMenu.color)
+            lastAwait = time.time()
 
         clock = pg.time.Clock()
         while 1:
@@ -164,36 +190,52 @@ class Window:
                     pg.quit()
                     exit()
 
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        pos = pg.mouse.get_pos()
-                        if pos[0] < 800 and pos[1] < 800:
-                            self.selectedSquare = (int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0)))
-                            piece = self.engine.board.board[self.selectedSquare[1]][self.selectedSquare[0]]
-                            if piece == 0: self.selectedSquare = None
-                            elif piece < 7 and self.engine.turn == 1: self.selectedSquare = None
-                            elif piece > 6 and self.engine.turn == 0: self.selectedSquare = None
-                            elif self.gamemode == 0 or self.engine.turn == self.color: self.validMoves = self.engine.generateMoves(self.selectedSquare)
+                if self.gamemode != 2 or self.color == self.engine.turn:
+                    if event.type == pg.MOUSEBUTTONDOWN:
+                        if event.button == 1:
+                            pos = pg.mouse.get_pos()
+                            if pos[0] < 800 and pos[1] < 800:
+                                self.selectedSquare = (int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0)))
+                                piece = self.engine.board.board[self.selectedSquare[1]][self.selectedSquare[0]]
+                                if piece == 0: self.selectedSquare = None
+                                elif piece < 7 and self.engine.turn == 1: self.selectedSquare = None
+                                elif piece > 6 and self.engine.turn == 0: self.selectedSquare = None
+                                elif self.gamemode == 0 or self.engine.turn == self.color: self.validMoves = self.engine.generateMoves(self.selectedSquare)
 
-                if event.type == pg.MOUSEBUTTONUP and self.selectedSquare != None:
-                    if event.button == 1:
-                        pos = pg.mouse.get_pos()
-                        if pos[0] < 800 and pos[1] < 800:
-                            try:
-                                move = self.engine.move(self.selectedSquare, (int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0))))
-                                if move == 1:
-                                    if self.engine.turn == 0: print("White wins!!!")
-                                    else: print("Black wins!!!")
-                                    pg.quit()
-                                    return
-                            except: self.engine.turn = not self.engine.turn
-                        self.validMoves = ()
-                        self.selectedSquare = None
-                        self.engine.turn = not self.engine.turn
+                    if event.type == pg.MOUSEBUTTONUP and self.selectedSquare != None:
+                        if event.button == 1:
+                            pos = pg.mouse.get_pos()
+                            if pos[0] < 800 and pos[1] < 800:
+                                try:
+                                    move = self.engine.move(self.selectedSquare, (int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0))))
+                                    if self.gamemode == 2: requests.get(f'http://127.0.0.1:5000/chess/move?gameIndex={mainMenu.gameIndex}&selectedSquare={self.selectedSquare}&newSquare={(int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0)))}')
+                                    if move == 1:
+                                        if self.engine.turn == 0: print("White wins!!!")
+                                        else: print("Black wins!!!")
+                                        pg.quit()
+                                        return
+                                except: self.engine.turn = not self.engine.turn
+                            self.validMoves = ()
+                            self.selectedSquare = None
+                            self.engine.turn = not self.engine.turn
+                else:
+                    if time.time() - lastAwait >= 1:
+                        lastAwait = time.time()
+                        status = requests.get(f'http://127.0.0.1:5000/chess/awaitMove?gameIndex={mainMenu.gameIndex}&playerId={mainMenu.playerId}').text
+                        if status == "True":
+                            self.engine.board.board = eval(status)
+                            if self.engine.turn == 0: print("White wins!!!")
+                            else: print("Black wins!!!")
+                            pg.quit()
+                            return
+                        elif status != "False":
+                            self.engine.board.board = eval(status)
+                            self.engine.turn = not self.engine.turn
 
             pg.display.flip()
             clock.tick(60)
+            await asyncio.sleep(0)
 
 if __name__ == "__main__":
     window = Window()
-    window.run()
+    asyncio.run(window.run())
