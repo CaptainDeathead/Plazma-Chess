@@ -6,7 +6,6 @@ from pygameGui import Button
 import requests
 import time
 from copy import deepcopy
-import asyncio
 
 pg.init()
 
@@ -35,7 +34,7 @@ class MainMenu:
         self.gameIndex = None
         self.color = None
 
-    async def run(self):
+    def run(self):
         clock = pg.time.Clock()
 
         while 1:
@@ -103,7 +102,6 @@ class MainMenu:
 
             clock.tick(60)
             pg.display.flip()
-            await asyncio.sleep(0)
 
 class ControlPanel:
     def __init__(self):
@@ -164,9 +162,9 @@ class Window:
                     else:
                         self.screen.blit(self.pieceFont.render(utils.PIECE_UNICODES[self.engine.board.board[y][x]], True, (0, 0, 0)), (x*100, y*100-20))
 
-    async def run(self):
+    def run(self):
         mainMenu = MainMenu(self.screen)
-        await mainMenu.run()
+        mainMenu.run()
         self.gamemode = mainMenu.selected
 
         if self.gamemode == 2:
@@ -234,8 +232,7 @@ class Window:
 
             pg.display.flip()
             clock.tick(60)
-            await asyncio.sleep(0)
 
 if __name__ == "__main__":
     window = Window()
-    asyncio.run(window.run())
+    window.run()
