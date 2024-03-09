@@ -18,7 +18,7 @@ classifiers = [
 ]
 keywords = ["chess", "engine", "game"]
 dependencies = []
-requires-python = ">=3.9"
+requires-python = ">3"
 
 [project.optional-dependencies]
 dev = []
