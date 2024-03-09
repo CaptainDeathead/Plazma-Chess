@@ -1,4 +1,4 @@
-import engine
+import plazma_chess as engine
 import pygame as pg
 import utils
 from bot import Bot
@@ -61,7 +61,7 @@ class MainMenu:
                                 self.screen.fill((0, 0, 0))
                                 self.screen.blit(self.arial60.render("Finding server...", True, (255, 255, 255)), (100, 100))
                                 pg.display.flip()
-                                response = requests.get('http://127.0.0.1:5000/chess/findGame')
+                                response = requests.get('https://captaindeathead.pythonanywhere.com/chess/findGame')
                                 if str(response.status_code)[0] == '4': # 400 error codes
                                     self.screen.fill((0, 0, 0))
                                     self.screen.blit(self.arial60.render("Network Error! Exiting in 3 seconds...", True, (255, 255, 255)), (100, 100))
@@ -80,11 +80,11 @@ class MainMenu:
                                     while 1:
                                         for event in pg.event.get():
                                             if event.type == pg.QUIT:
-                                                requests.get(f'http://127.0.0.1:5000/chess/leaveGame?gameIndex={self.gameIndex}')
+                                                requests.get(f'https://captaindeathead.pythonanywhere.com/chess/leaveGame?gameIndex={self.gameIndex}')
                                                 pg.quit()
                                                 exit()
 
-                                        start = requests.get(f'http://127.0.0.1:5000/chess/gameStart?gameIndex={self.gameIndex}').text
+                                        start = requests.get(f'https://captaindeathead.pythonanywhere.com/chess/gameStart?gameIndex={self.gameIndex}').text
                                         if bool(int(start)): break
                                         
                                         clock.tick(0.5)
@@ -206,7 +206,7 @@ class Window:
                             if pos[0] < 800 and pos[1] < 800:
                                 try:
                                     move = self.engine.move(self.selectedSquare, (int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0))))
-                                    if self.gamemode == 2: requests.get(f'http://127.0.0.1:5000/chess/move?gameIndex={mainMenu.gameIndex}&selectedSquare={self.selectedSquare}&newSquare={(int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0)))}')
+                                    if self.gamemode == 2: requests.get(f'https://captaindeathead.pythonanywhere.com/chess/move?gameIndex={mainMenu.gameIndex}&selectedSquare={self.selectedSquare}&newSquare={(int(round((pos[0]-50)/100, 0)), int(round((pos[1]-50)/100, 0)))}')
                                     if move == 1:
                                         if self.engine.turn == 0: print("White wins!!!")
                                         else: print("Black wins!!!")
@@ -219,7 +219,7 @@ class Window:
                 else:
                     if time.time() - lastAwait >= 1:
                         lastAwait = time.time()
-                        status = requests.get(f'http://127.0.0.1:5000/chess/awaitMove?gameIndex={mainMenu.gameIndex}&playerId={mainMenu.playerId}').text
+                        status = requests.get(f'https://captaindeathead.pythonanywhere.com/chess/awaitMove?gameIndex={mainMenu.gameIndex}&playerId={mainMenu.playerId}').text
                         if status == "True":
                             self.engine.board.board = eval(status)
                             if self.engine.turn == 0: print("White wins!!!")

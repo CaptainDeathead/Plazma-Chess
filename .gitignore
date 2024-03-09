@@ -2,5 +2,8 @@ bitToTen.py
 server.py
 test.py
 Web
+build
+dist
+plazma_chess.egg-info
 .vscode
 __pycache__
