@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: plazma-chess
-Version: 1.1.0
+Version: 1.2.0
 Summary: UNKNOWN
 Home-page: UNKNOWN
 License: UNKNOWN
@@ -14,9 +14,7 @@ License-File: LICENCE
 
 ### This is a basic chess engine based off of the [python-chess](https://github.com/niklasf/python-chess) library
 
-#### The engine comes with a client which supports multiplayer, singleplayer and bot chess matches!
-
-Try running ```python example.py``` to test the engine or just play with friends
+#### The engine has a [client](https://github.com/niklasf/python-chess-client) which supports multiplayer, singleplayer and bot chess matches!
 
 ## Documentation
 ### Setting up the board
