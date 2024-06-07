@@ -161,8 +161,8 @@ class Engine:
                 for x in range(-1, 2):
                     if self.board.pieceAt((king[0]+x, king[1]+y))[1] == 6: return True
 
-    def generatePawnMoves(self, pos):
-        moves = []
+    def generatePawnMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
 
         if self.turn == 0:
             if pos[1] == 6 and not self.board.pieceAt((pos[0], 4))[0]: moves.append((pos[0], 4)) # 2 spaces forward
@@ -191,8 +191,8 @@ class Engine:
         
         return moves
 
-    def generateKnightMoves(self, pos):
-        moves = []
+    def generateKnightMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
 
         moves.append((pos[0]-1, pos[1]-2))
         moves.append((pos[0]+1, pos[1]-2))
@@ -203,7 +203,7 @@ class Engine:
         moves.append((pos[0]-2, pos[1]+1))
         moves.append((pos[0]-2, pos[1]-1))
 
-        newMoves = []
+        newMoves: List[Tuple[int, int]] = []
         for move in moves:
             if move[0] < 0 or move[0] > 7 or move[1] < 0 or move[1] > 7: continue
             
@@ -214,8 +214,8 @@ class Engine:
         
         return newMoves
 
-    def generateSlidingMoves(self, pos):
-        moves = []
+    def generateSlidingMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
         # forward
         for y in range(pos[1]-1, -1, -1):
             col = self.board.pieceAt((pos[0], y))
@@ -254,7 +254,7 @@ class Engine:
 
         return moves
     
-    def generateDiagonalMoves(self, pos) -> List[Tuple[int, int]]:
+    def generateDiagonalMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
         # forward-left
         x = pos[0]
