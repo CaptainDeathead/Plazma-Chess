@@ -90,6 +90,17 @@ class Engine:
         # check detection
         self.turn = not self.turn
 
+
+        moves = []
+
+        for y in range(8):
+            for x in range(8):
+                if self.board.board[y][x] == 0: continue
+                elif self.board.board[y][x] < 7 and self.turn == 0: moves.append(self.generateMoves((x, y)))
+                elif self.board.board[y][x] > 6 and self.turn == 1: moves.append(self.generateMoves((x, y)))
+
+        self.turn = not self.turn
+
         newMoves: list = []
         for move in moves:
             if move != (): newMoves.append(move)
