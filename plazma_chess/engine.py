@@ -1,5 +1,5 @@
 import copy
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 
 class Board:
     def __init__(self) -> None:
@@ -22,12 +22,12 @@ class Board:
         else: return (False, 0)
 
 class Engine:
-    def __init__(self):
-        self.TURN_STR = {0: "white", 1: "black"}
-        self.board = Board()
-        self.turn = 0
+    def __init__(self) -> None:
+        self.TURN_STR: Dict[int, str] = {0: "white", 1: "black"}
+        self.board: Board = Board()
+        self.turn: int = 0
 
-    def move(self, pos, newPos):
+    def move(self, pos, newPos) -> int:
         moves = self.generateMoves(pos)
 
         # castling
@@ -90,7 +90,7 @@ class Engine:
         # check detection
         self.turn = not self.turn
         
-        moves = []
+        moves: list = []
 
         for y in range(8):
             for x in range(8):
@@ -100,7 +100,7 @@ class Engine:
 
         self.turn = not self.turn
 
-        newMoves = []
+        newMoves: list = []
         for move in moves:
             if move != (): newMoves.append(move)
 
