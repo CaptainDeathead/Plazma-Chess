@@ -27,7 +27,7 @@ class Engine:
         self.board: Board = Board()
         self.turn: int = 0
 
-    def move(self, pos, newPos) -> int:
+    def move(self, pos: tuple[int, int], newPos: tuple[int, int]) -> int:
         moves = self.generateMoves(pos)
 
         # castling
