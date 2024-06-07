@@ -42,7 +42,7 @@ class Engine:
         if newPos in moves:
             if newPos[1] == 17:
                 if newPos[0] == 12:
-                    yRank = abs(self.turn-1)*7
+                    yRank: int = abs(self.turn-1)*7
                     self.board.board[yRank][4] = 0 # king empty
                     self.board.board[yRank][3] = 4 # rook
                     self.board.board[yRank][2] = 6 # king
@@ -89,16 +89,6 @@ class Engine:
 
         # check detection
         self.turn = not self.turn
-        
-        moves: list = []
-
-        for y in range(8):
-            for x in range(8):
-                if self.board.board[y][x] == 0: continue
-                elif self.board.board[y][x] < 7 and self.turn == 0: moves.append(self.generateMoves((x, y)))
-                elif self.board.board[y][x] > 6 and self.turn == 1: moves.append(self.generateMoves((x, y)))
-
-        self.turn = not self.turn
 
         newMoves: list = []
         for move in moves:
@@ -107,13 +97,13 @@ class Engine:
         if newMoves == []: return 1
         else: return 0
 
-    def __moveWithoutCheck(self, pos, newPos) -> None:
+    def __moveWithoutCheck(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> None:
         self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
         self.board.board[pos[1]][pos[0]] = 0
 
     def inCheck(self, turn, square=None):
         if square == None:
-            king = None
+            king: bool = None
             for y in range(8):
                 for x in range(8):
                     piece = self.board.board[y][x]
@@ -380,8 +370,8 @@ class Engine:
 
         return moves
 
-    def generateMoves(self, pos):
-        moves = []
+    def generateMoves(self, pos: Tuple[int, int]) -> tuple:
+        moves: list[Tuple[int, int]] = []
         piece = self.board.board[pos[1]][pos[0]]
 
         if piece == 0: raise Exception(f"No valid piece found at ({pos[0]}, {pos[1]})!")
@@ -407,7 +397,7 @@ class Engine:
 
         ogBoard = copy.deepcopy(self.board.board)
 
-        newMoves = []
+        newMoves: list[Tuple[int, int]] = []
         for move in moves:
             # castling
             if move[1] > 7:
