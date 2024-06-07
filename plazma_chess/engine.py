@@ -1,5 +1,5 @@
 import copy
-from typing import Tuple
+from typing import Tuple, List
 
 class Board:
     def __init__(self) -> None:
@@ -12,12 +12,12 @@ class Board:
                       [1, 1, 1, 1, 1, 1, 1, 1],
                       [4, 2, 3, 5, 6, 3, 2, 4]]
         
-        self.whiteCastling = [True, True]
-        self.blackCastling = [True, True]
+        self.whiteCastling: List[bool, bool] = [True, True]
+        self.blackCastling: List[bool, bool] = [True, True]
         
-    def pieceAt(self, pos):
+    def pieceAt(self, pos) -> Tuple[bool, int]:
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
-        piece = self.board[pos[1]][pos[0]]
+        piece: int = self.board[pos[1]][pos[0]]
         if piece != 0: return (True, piece)
         else: return (False, 0)
 
