@@ -325,7 +325,8 @@ class Engine:
 
     def generateKingMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
-        check: bool
+        check: bool = False
+        
         if self.turn == 0:
             for y in range(-1, 2):
                 if pos[1]+y > 7 or pos[1]+y < 0: continue
@@ -336,7 +337,6 @@ class Engine:
 
             # castling
             if self.board.whiteCastling[0]:
-                check = False
                 for i in range(2, 4): # only go to index 2
                     check = self.inCheck(self.turn, (i, 7))
                     if self.board.pieceAt((i, 7))[0]: check = True
@@ -345,7 +345,6 @@ class Engine:
                 if not check: moves.append((12, 17))
 
             if self.board.whiteCastling[1]:
-                check = False
                 for i in range(5, 7): # only go to index 2
                     check = self.inCheck(self.turn, (i, 7))
                     if self.board.pieceAt((i, 7))[0]: check = True
@@ -363,7 +362,6 @@ class Engine:
 
             # castling
             if self.board.blackCastling[0]:
-                check = False
                 for i in range(2, 4): # only go to index 2
                     check = self.inCheck(self.turn, (i, 0))
                     if self.board.pieceAt((i, 0))[0]: check = True
@@ -372,7 +370,6 @@ class Engine:
                 if not check: moves.append((12, 10))
 
             if self.board.blackCastling[1]:
-                check = False
                 for i in range(5, 7): # only go to index 2
                     check = self.inCheck(self.turn, (i, 0))
                     if self.board.pieceAt((i, 0))[0]: check = True
