@@ -1,7 +1,8 @@
 import copy
+from typing import Tuple
 
 class Board:
-    def __init__(self):
+    def __init__(self) -> None:
         self.board = [[10, 8, 9, 11, 12, 9, 8, 10],
                       [7, 7, 7, 7, 7, 7, 7, 7],
                       [0, 0, 0, 0, 0, 0, 0, 0],
@@ -106,7 +107,7 @@ class Engine:
         if newMoves == []: return 1
         else: return 0
 
-    def __moveWithoutCheck(self, pos, newPos):
+    def __moveWithoutCheck(self, pos, newPos) -> None:
         self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
         self.board.board[pos[1]][pos[0]] = 0
 
