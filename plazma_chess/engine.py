@@ -101,7 +101,7 @@ class Engine:
         self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
         self.board.board[pos[1]][pos[0]] = 0
 
-    def inCheck(self, turn, square=None):
+    def inCheck(self, turn, square=None) -> bool:
         if square == None:
             king: bool = None
             for y in range(8):
@@ -312,8 +312,9 @@ class Engine:
 
         return moves
 
-    def generateKingMoves(self, pos):
-        moves = []
+    def generateKingMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
+        check: bool
         if self.turn == 0:
             for y in range(-1, 2):
                 if pos[1]+y > 7 or pos[1]+y < 0: continue
