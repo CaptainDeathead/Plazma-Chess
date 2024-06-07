@@ -254,8 +254,8 @@ class Engine:
 
         return moves
     
-    def generateDiagonalMoves(self, pos):
-        moves = []
+    def generateDiagonalMoves(self, pos) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
         # forward-left
         x = pos[0]
         y = pos[1]
