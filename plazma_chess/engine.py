@@ -78,7 +78,7 @@ class Engine:
 
                 elif piece == 10:
                     if pos[0] == 0: self.board.blackCastling[0] = False
-                    elif pos[0] == 7: self.board.blackCastling[1] = False
+                    elif pos[0]inCheck == 7: self.board.blackCastling[1] = False
 
                 elif piece == 11: self.board.blackCastling = [False, False]
 
@@ -101,7 +101,7 @@ class Engine:
         self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
         self.board.board[pos[1]][pos[0]] = 0
 
-    def inCheck(self, turn, square=None) -> bool:
+    def inCheck(self, turn: int, square: Tuple[int, int] | None = None) -> bool:
         if square == None:
             king: bool = None
             for y in range(8):
