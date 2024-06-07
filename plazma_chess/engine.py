@@ -27,7 +27,7 @@ class Engine:
         self.board: Board = Board()
         self.turn: int = 0
 
-    def move(self, pos: tuple[int, int], newPos: tuple[int, int]) -> int:
+    def move(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> int:
         moves = self.generateMoves(pos)
 
         # castling
@@ -78,7 +78,7 @@ class Engine:
 
                 elif piece == 10:
                     if pos[0] == 0: self.board.blackCastling[0] = False
-                    elif pos[0]inCheck == 7: self.board.blackCastling[1] = False
+                    elif pos[0] == 7: self.board.blackCastling[1] = False
 
                 elif piece == 11: self.board.blackCastling = [False, False]
 
