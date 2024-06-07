@@ -1,7 +1,8 @@
 import copy
+from typing import Tuple, List, Dict
 
 class Board:
-    def __init__(self):
+    def __init__(self) -> None:
         self.board = [[10, 8, 9, 11, 12, 9, 8, 10],
                       [7, 7, 7, 7, 7, 7, 7, 7],
                       [0, 0, 0, 0, 0, 0, 0, 0],
@@ -11,22 +12,22 @@ class Board:
                       [1, 1, 1, 1, 1, 1, 1, 1],
                       [4, 2, 3, 5, 6, 3, 2, 4]]
         
-        self.whiteCastling = [True, True]
-        self.blackCastling = [True, True]
+        self.whiteCastling: List[bool, bool] = [True, True]
+        self.blackCastling: List[bool, bool] = [True, True]
         
-    def pieceAt(self, pos):
+    def pieceAt(self, pos) -> Tuple[bool, int]:
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
-        piece = self.board[pos[1]][pos[0]]
+        piece: int = self.board[pos[1]][pos[0]]
         if piece != 0: return (True, piece)
         else: return (False, 0)
 
 class Engine:
-    def __init__(self):
-        self.TURN_STR = {0: "white", 1: "black"}
-        self.board = Board()
-        self.turn = 0
+    def __init__(self) -> None:
+        self.TURN_STR: Dict[int, str] = {0: "white", 1: "black"}
+        self.board: Board = Board()
+        self.turn: int = 0
 
-    def move(self, pos, newPos):
+    def move(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> int:
         moves = self.generateMoves(pos)
 
         # castling
@@ -41,7 +42,7 @@ class Engine:
         if newPos in moves:
             if newPos[1] == 17:
                 if newPos[0] == 12:
-                    yRank = abs(self.turn-1)*7
+                    yRank: int = abs(self.turn-1)*7
                     self.board.board[yRank][4] = 0 # king empty
                     self.board.board[yRank][3] = 4 # rook
                     self.board.board[yRank][2] = 6 # king
@@ -88,7 +89,8 @@ class Engine:
 
         # check detection
         self.turn = not self.turn
-        
+
+
         moves = []
 
         for y in range(8):
@@ -99,20 +101,20 @@ class Engine:
 
         self.turn = not self.turn
 
-        newMoves = []
+        newMoves: list = []
         for move in moves:
             if move != (): newMoves.append(move)
 
         if newMoves == []: return 1
         else: return 0
 
-    def __moveWithoutCheck(self, pos, newPos):
+    def __moveWithoutCheck(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> None:
         self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
         self.board.board[pos[1]][pos[0]] = 0
 
-    def inCheck(self, turn, square=None):
+    def inCheck(self, turn: int, square: Tuple[int, int] | None = None) -> bool:
         if square == None:
-            king = None
+            king: bool = None
             for y in range(8):
                 for x in range(8):
                     piece = self.board.board[y][x]
@@ -170,8 +172,8 @@ class Engine:
                 for x in range(-1, 2):
                     if self.board.pieceAt((king[0]+x, king[1]+y))[1] == 6: return True
 
-    def generatePawnMoves(self, pos):
-        moves = []
+    def generatePawnMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
 
         if self.turn == 0:
             if pos[1] == 6 and not self.board.pieceAt((pos[0], 4))[0]: moves.append((pos[0], 4)) # 2 spaces forward
@@ -200,8 +202,8 @@ class Engine:
         
         return moves
 
-    def generateKnightMoves(self, pos):
-        moves = []
+    def generateKnightMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
 
         moves.append((pos[0]-1, pos[1]-2))
         moves.append((pos[0]+1, pos[1]-2))
@@ -212,7 +214,7 @@ class Engine:
         moves.append((pos[0]-2, pos[1]+1))
         moves.append((pos[0]-2, pos[1]-1))
 
-        newMoves = []
+        newMoves: List[Tuple[int, int]] = []
         for move in moves:
             if move[0] < 0 or move[0] > 7 or move[1] < 0 or move[1] > 7: continue
             
@@ -223,8 +225,8 @@ class Engine:
         
         return newMoves
 
-    def generateSlidingMoves(self, pos):
-        moves = []
+    def generateSlidingMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
         # forward
         for y in range(pos[1]-1, -1, -1):
             col = self.board.pieceAt((pos[0], y))
@@ -263,8 +265,8 @@ class Engine:
 
         return moves
     
-    def generateDiagonalMoves(self, pos):
-        moves = []
+    def generateDiagonalMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
         # forward-left
         x = pos[0]
         y = pos[1]
@@ -321,8 +323,9 @@ class Engine:
 
         return moves
 
-    def generateKingMoves(self, pos):
-        moves = []
+    def generateKingMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        moves: List[Tuple[int, int]] = []
+        check: bool
         if self.turn == 0:
             for y in range(-1, 2):
                 if pos[1]+y > 7 or pos[1]+y < 0: continue
@@ -379,8 +382,8 @@ class Engine:
 
         return moves
 
-    def generateMoves(self, pos):
-        moves = []
+    def generateMoves(self, pos: Tuple[int, int]) -> tuple:
+        moves: list[Tuple[int, int]] = []
         piece = self.board.board[pos[1]][pos[0]]
 
         if piece == 0: raise Exception(f"No valid piece found at ({pos[0]}, {pos[1]})!")
@@ -406,7 +409,7 @@ class Engine:
 
         ogBoard = copy.deepcopy(self.board.board)
 
-        newMoves = []
+        newMoves: list[Tuple[int, int]] = []
         for move in moves:
             # castling
             if move[1] > 7:
