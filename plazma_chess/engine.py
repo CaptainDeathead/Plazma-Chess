@@ -1,6 +1,10 @@
 import copy
 from typing import Tuple, List, Dict
 
+class IllegalMoveException(Exception):
+    def __init__(self, pos: Tuple[int, int], new_pos: Tuple[int, int]) -> None:
+        super().__init__(f"Illegal move!\nCannot move from: `{pos.__str__()}` to `{new_pos.__str__()}`.")
+
 class Board:
     def __init__(self) -> None:
         self.board = [[10, 8, 9, 11, 12, 9, 8, 10],
@@ -28,6 +32,14 @@ class Engine:
         self.turn: int = 0
 
     def move(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> int:
+        """
+        Validates a move by finding the piece on the starting position and checking if it can legally move to the new position.
+
+        Takes into account check and castling as well.
+
+        This function will automaticlly move the piece to the new position if it is legal, else it will raise an `IllegalMoveException`.
+        """
+
         moves = self.generateMoves(pos)
 
         # castling
@@ -85,7 +97,7 @@ class Engine:
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
                 self.board.board[pos[1]][pos[0]] = 0
             
-        else: raise Exception("Illegal move!")
+        else: raise IllegalMoveException(pos, newPos)
 
         # check detection
         self.turn = not self.turn
@@ -109,6 +121,11 @@ class Engine:
         else: return 0
 
     def __moveWithoutCheck(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> None:
+        """
+        This method makes illegal moves!
+        Please use `move` instead!
+        """
+
         self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
         self.board.board[pos[1]][pos[0]] = 0
 
