@@ -193,7 +193,8 @@ class Engine:
         moves: List[Tuple[int, int]] = []
 
         if self.turn == 0:
-            if pos[1] == 6 and not self.board.pieceAt((pos[0], 4))[0]: moves.append((pos[0], 4)) # 2 spaces forward
+            if pos[1] == 6 and not self.board.pieceAt((pos[0], 4))[0] and not self.board.pieceAt((pos[0], 5))[0]:
+                moves.append((pos[0], 4)) # 2 spaces forward
 
             if pos[1] > 0:
                 if not self.board.pieceAt((pos[0], pos[1]-1))[0]: moves.append((pos[0], pos[1]-1)) # 1 space forward
@@ -205,7 +206,8 @@ class Engine:
                     col = self.board.pieceAt((pos[0]+1, pos[1]-1))
                     if col[0] and col[1] > 6: moves.append((pos[0]+1, pos[1]-1)) # 1 capture forward-right
         else:
-            if pos[1] == 1 and not self.board.pieceAt((pos[0], 3))[0]: moves.append((pos[0], 3)) # 2 spaces forward
+            if pos[1] == 1 and not self.board.pieceAt((pos[0], 2))[0] and not self.board.pieceAt((pos[0], 3))[0]:
+                moves.append((pos[0], 3)) # 2 spaces forward
 
             if pos[1] < 7:
                 if not self.board.pieceAt((pos[0], pos[1]+1))[0]: moves.append((pos[0], pos[1]+1)) # 1 space forward
