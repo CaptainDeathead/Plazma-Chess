@@ -193,7 +193,7 @@ class Engine:
         moves: List[Tuple[int, int]] = []
 
         if self.turn == 0:
-            if pos[1] == 6 and not self.board.pieceAt((pos[0], 4))[0] and not self.board.pieceAt((pos[0], 5))[0]:
+            if pos[1] == 6 and not self.board.pieceAt((pos[0], 5))[0] and not self.board.pieceAt((pos[0], 4))[0]:
                 moves.append((pos[0], 4)) # 2 spaces forward
 
             if pos[1] > 0:
