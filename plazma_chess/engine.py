@@ -14,6 +14,8 @@ class Board:
         
         self.whiteCastling: List[bool, bool] = [True, True]
         self.blackCastling: List[bool, bool] = [True, True]
+        self.whiteEnPassent: List[bool] = [False, False, False, False, False, False, False, False]
+        self.blackEnPassent: List[bool] = [False, False, False, False, False, False, False, False]
         
     def pieceAt(self, pos) -> Tuple[bool, int]:
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
