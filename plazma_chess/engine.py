@@ -14,8 +14,10 @@ class Board:
         
         self.whiteCastling: List[bool, bool] = [True, True]
         self.blackCastling: List[bool, bool] = [True, True]
-        self.whiteEnPassent: List[Tuple[int, int]] = []
-        self.blackEnPassent: List[Tuple[int, int]] = []
+        self.whiteEnPassentAtk: List[Tuple[int, int]] = []
+        self.whiteEnPassentPos: Tuple[int, int] | None = None
+        self.blackEnPassentAtk: List[Tuple[int, int]] = []
+        self.blackEnPassentPos: Tuple[int, int] | None = None
         
     def pieceAt(self, pos: Tuple[int, int]) -> Tuple[bool, int]:
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
@@ -32,6 +34,7 @@ class Engine:
     def move(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> int:
         moves = self.generateMoves(pos)
 
+        #clearing past en passent possibilities.
         if self.turn == 0:
             self.board.whiteEnPassent.clear()
         else:
@@ -90,20 +93,23 @@ class Engine:
                 elif piece == 11: self.board.blackCastling = [False, False]
                 
                 #En passent setup
+                #white
                 elif piece == 1:
                     if newPos[1] == (pos[1] + 2):
+                        self.board.whiteEnPassentPos = newPos
                         if newPos[0] != 7:
-                            self.board.whiteEnPassent.append((newPos[0]+1, newPos[1]+1))
+                            self.board.whiteEnPassentAtk.append((newPos[0]+1, newPos[1]+1))
                         if newPos[0] != 0:
-                            self.board.whiteEnPassent.append((newPos[0]-1, newPos[1]+1))
+                            self.board.whiteEnPassentAtk.append((newPos[0]-1, newPos[1]+1))
 
-
+                #black
                 elif piece == 7:
                     if newPos[1] == (pos[1] + 2):
+                        self.board.blackEnPassentPos = newPos
                         if newPos[0] != 7:
-                            self.board.whiteEnPassent.append((newPos[0]+1, newPos[1]+1))
+                            self.board.whiteEnPassentAtk.append((newPos[0]+1, newPos[1]+1))
                         if newPos[0] != 0:
-                            self.board.whiteEnPassent.append((newPos[0]-1, newPos[1]+1))
+                            self.board.whiteEnPassentAtk.append((newPos[0]-1, newPos[1]+1))
 
 
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
