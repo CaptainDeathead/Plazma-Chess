@@ -88,11 +88,19 @@ class Engine:
                 elif piece == 1:
                     if newPos[1] == (pos[1] + 2):
                         self.board.whiteEnPassent.clear()
-                        
+                        if newPos[0] != 7:
+                            self.board.whiteEnPassent.append((newPos[0]+1, newPos[1]+1))
+                        if newPos[0] != 0:
+                            self.board.whiteEnPassent.append((newPos[0]-1, newPos[1]+1))
+
 
                 elif piece == 7:
                     if newPos[1] == (pos[1] + 2):
                         self.board.blackEnPassent.clear()
+                        if newPos[0] != 7:
+                            self.board.whiteEnPassent.append((newPos[0]+1, newPos[1]+1))
+                        if newPos[0] != 0:
+                            self.board.whiteEnPassent.append((newPos[0]-1, newPos[1]+1))
 
 
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
