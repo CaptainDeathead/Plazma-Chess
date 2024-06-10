@@ -14,10 +14,10 @@ class Board:
         
         self.whiteCastling: List[bool, bool] = [True, True]
         self.blackCastling: List[bool, bool] = [True, True]
-        self.whiteEnPassent: List[bool] = [False, False, False, False, False, False, False, False]
-        self.blackEnPassent: List[bool] = [False, False, False, False, False, False, False, False]
+        self.whiteEnPassent: List[Tuple[int, int]] = []
+        self.blackEnPassent: List[Tuple[int, int]] = []
         
-    def pieceAt(self, pos) -> Tuple[bool, int]:
+    def pieceAt(self, pos: Tuple[int, int]) -> Tuple[bool, int]:
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
         piece: int = self.board[pos[1]][pos[0]]
         if piece != 0: return (True, piece)
@@ -83,6 +83,17 @@ class Engine:
                     elif pos[0] == 7: self.board.blackCastling[1] = False
 
                 elif piece == 11: self.board.blackCastling = [False, False]
+                
+                #En passent setup
+                elif piece == 1:
+                    if newPos[1] == (pos[1] + 2):
+                        self.board.whiteEnPassent.clear()
+                        
+
+                elif piece == 7:
+                    if newPos[1] == (pos[1] + 2):
+                        self.board.blackEnPassent.clear()
+
 
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
                 self.board.board[pos[1]][pos[0]] = 0
