@@ -102,6 +102,8 @@ class Engine:
                             self.board.whiteEnPassentAtk.append((newPos[0]+1, newPos[1]+1))
                         if newPos[0] != 0:
                             self.board.whiteEnPassentAtk.append((newPos[0]-1, newPos[1]+1))
+                    elif newPos == self.board.blackEnPassentPos:
+                        self.board.board[self.board.blackEnPassentPos[0]][self.board.blackEnPassentPos[1]-1] = 0
 
                 #black
                 elif piece == 7:
@@ -109,13 +111,16 @@ class Engine:
                         self.board.blackEnPassent.clear()
                         self.board.blackEnPassentPos = newPos
                         if newPos[0] != 7:
-                            self.board.whiteEnPassentAtk.append((newPos[0]+1, newPos[1]+1))
+                            self.board.whiteEnPassentAtk.append((newPos[0]+1, newPos[1]-1))
                         if newPos[0] != 0:
-                            self.board.whiteEnPassentAtk.append((newPos[0]-1, newPos[1]+1))
+                            self.board.whiteEnPassentAtk.append((newPos[0]-1, newPos[1]-1))
+                    elif newPos == self.board.whiteEnPassentPos:
+                        self.board.board[self.board.whiteEnPassentPos[0]][self.board.whiteEnPassentPos[1]+1] = 0
 
 
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
                 self.board.board[pos[1]][pos[0]] = 0
+            
             
         else: raise Exception("Illegal move!")
 
