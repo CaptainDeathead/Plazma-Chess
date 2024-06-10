@@ -32,6 +32,11 @@ class Engine:
     def move(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> int:
         moves = self.generateMoves(pos)
 
+        if self.turn == 0:
+            self.board.whiteEnPassent.clear()
+        else:
+            self.board.blackEnPassent.clear()
+
         # castling
         if pos == (4, 0) or pos == (4, 7):
             if (12, 17) in moves or (16, 17) in moves:
@@ -87,7 +92,6 @@ class Engine:
                 #En passent setup
                 elif piece == 1:
                     if newPos[1] == (pos[1] + 2):
-                        self.board.whiteEnPassent.clear()
                         if newPos[0] != 7:
                             self.board.whiteEnPassent.append((newPos[0]+1, newPos[1]+1))
                         if newPos[0] != 0:
@@ -96,7 +100,6 @@ class Engine:
 
                 elif piece == 7:
                     if newPos[1] == (pos[1] + 2):
-                        self.board.blackEnPassent.clear()
                         if newPos[0] != 7:
                             self.board.whiteEnPassent.append((newPos[0]+1, newPos[1]+1))
                         if newPos[0] != 0:
