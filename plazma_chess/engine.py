@@ -18,8 +18,11 @@ class Board:
         
         self.whiteCastling: List[bool, bool] = [True, True]
         self.blackCastling: List[bool, bool] = [True, True]
+
+        self.whiteEnPassentPos: Tuple[int, int] | None = None
+        self.blackEnPassentPos: Tuple[int, int] | None = None
         
-    def pieceAt(self, pos) -> Tuple[bool, int]:
+    def pieceAt(self, pos: Tuple[int, int]) -> Tuple[bool, int]:
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
         piece: int = self.board[pos[1]][pos[0]]
         if piece != 0: return (True, piece)
@@ -35,12 +38,18 @@ class Engine:
         """
         Validates a move by finding the piece on the starting position and checking if it can legally move to the new position.
 
-        Takes into account check and castling as well.
+        Takes into account check, en passent and castling as well.
 
         This function will automaticlly move the piece to the new position if it is legal, else it will raise an `IllegalMoveException`.
         """
 
         moves = self.generateMoves(pos)
+
+        # clearing past en passent possibilities.
+        if self.turn == 0:
+            self.board.whiteEnPassentPos = None
+        else:
+            self.board.blackEnPassentPos = None
 
         # castling
         if pos == (4, 0) or pos == (4, 7):
@@ -80,7 +89,6 @@ class Engine:
                     self.board.board[yRank][7] = 0 # rook empty
             else:
                 piece = self.board.pieceAt((pos[0], pos[1]))
-
                 # set castling states
                 if piece == 4:
                     if pos[0] == 0: self.board.whiteCastling[0] = False
@@ -93,6 +101,20 @@ class Engine:
                     elif pos[0] == 7: self.board.blackCastling[1] = False
 
                 elif piece == 11: self.board.blackCastling = [False, False]
+                
+                # En passent setup
+                # white
+                elif piece[1] == 1:
+                    if newPos[1] == (pos[1] - 2):
+                        self.board.whiteEnPassentPos = (newPos[0], newPos[1]+1)
+                    elif newPos == self.board.blackEnPassentPos:
+                        self.board.board[self.board.blackEnPassentPos[1]+1][self.board.blackEnPassentPos[0]] = 0
+                # black
+                elif piece[1] == 7:
+                    if newPos[1] == (pos[1] + 2):
+                        self.board.blackEnPassentPos = (newPos[0], newPos[1]-1)
+                    elif newPos == self.board.whiteEnPassentPos:
+                        self.board.board[self.board.whiteEnPassentPos[1]-1][self.board.whiteEnPassentPos[0]] = 0
 
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
                 self.board.board[pos[1]][pos[0]] = 0
@@ -101,7 +123,6 @@ class Engine:
 
         # check detection
         self.turn = not self.turn
-
 
         moves = []
 
@@ -192,6 +213,7 @@ class Engine:
     def generatePawnMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
 
+        # white
         if self.turn == 0:
             if pos[1] == 6 and not self.board.pieceAt((pos[0], 5))[0] and not self.board.pieceAt((pos[0], 4))[0]:
                 moves.append((pos[0], 4)) # 2 spaces forward
@@ -202,9 +224,19 @@ class Engine:
                 if pos[0] > 0:
                     col = self.board.pieceAt((pos[0]-1, pos[1]-1))
                     if col[0] and col[1] > 6: moves.append((pos[0]-1, pos[1]-1)) # 1 capture forward-left
+                    
+                    if self.board.blackEnPassentPos is not None:
+                        if pos[0]-1 == self.board.blackEnPassentPos[0] and pos[1]-1 == self.board.blackEnPassentPos[1]:
+                            moves.append(self.board.blackEnPassentPos)
                 if pos[0] < 7:
                     col = self.board.pieceAt((pos[0]+1, pos[1]-1))
                     if col[0] and col[1] > 6: moves.append((pos[0]+1, pos[1]-1)) # 1 capture forward-right
+
+                    if self.board.blackEnPassentPos is not None:
+                        if pos[0]+1 == self.board.blackEnPassentPos[0] and pos[1]-1 == self.board.blackEnPassentPos[1]:
+                            moves.append(self.board.blackEnPassentPos)
+
+        # black
         else:
             if pos[1] == 1 and not self.board.pieceAt((pos[0], 2))[0] and not self.board.pieceAt((pos[0], 3))[0]:
                 moves.append((pos[0], 3)) # 2 spaces forward
@@ -215,9 +247,17 @@ class Engine:
                 if pos[0] > 0:
                     col = self.board.pieceAt((pos[0]-1, pos[1]+1))
                     if col[0] and col[1] < 7: moves.append((pos[0]-1, pos[1]+1)) # 1 capture forward-left
+
+                    if self.board.whiteEnPassentPos is not None:
+                        if pos[0]-1 == self.board.whiteEnPassentPos[0] and pos[1]+1 == self.board.whiteEnPassentPos[1]:
+                            moves.append(self.board.whiteEnPassentPos)
                 if pos[0] < 7:
                     col = self.board.pieceAt((pos[0]+1, pos[1]+1))
                     if col[0] and col[1] < 7: moves.append((pos[0]+1, pos[1]+1)) # 1 capture forward-right
+
+                    if self.board.whiteEnPassentPos is not None:
+                        if pos[0]+1 == self.board.whiteEnPassentPos[0] and pos[1]+1 == self.board.whiteEnPassentPos[1]:
+                            moves.append(self.board.whiteEnPassentPos)
         
         return moves
 
@@ -246,6 +286,7 @@ class Engine:
 
     def generateSlidingMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
+        
         # forward
         for y in range(pos[1]-1, -1, -1):
             col = self.board.pieceAt((pos[0], y))
@@ -286,9 +327,11 @@ class Engine:
     
     def generateDiagonalMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
+
         # forward-left
         x = pos[0]
         y = pos[1]
+
         while True:
             x-=1
             y-=1
@@ -302,6 +345,7 @@ class Engine:
         # forward-right
         x = pos[0]
         y = pos[1]
+
         while True:
             x+=1
             y-=1
@@ -315,6 +359,7 @@ class Engine:
         # back-left
         x = pos[0]
         y = pos[1]
+
         while True:
             x-=1
             y+=1
@@ -329,6 +374,7 @@ class Engine:
         # back-right
         x = pos[0]
         y = pos[1]
+
         while True:
             x+=1
             y+=1
@@ -399,6 +445,7 @@ class Engine:
         return moves
 
     def generateMoves(self, pos: Tuple[int, int]) -> tuple:
+
         moves: list[Tuple[int, int]] = []
         piece = self.board.board[pos[1]][pos[0]]
 
@@ -427,6 +474,7 @@ class Engine:
 
         newMoves: list[Tuple[int, int]] = []
         for move in moves:
+            
             # castling
             if move[1] > 7:
                 newMoves.append(move)

@@ -1,6 +1,11 @@
 bitToTen.py
 server.py
 test.py
+bot.py
+__init__.py
+example.py
+pygameGui.py
+utils.py
 Web
 build
 dist
