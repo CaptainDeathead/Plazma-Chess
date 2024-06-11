@@ -1,6 +1,10 @@
 import copy
 from typing import Tuple, List, Dict
 
+class IllegalMoveException(Exception):
+    def __init__(self, pos: Tuple[int, int], new_pos: Tuple[int, int]) -> None:
+        super().__init__(f"Illegal move!\nCannot move from: `{pos.__str__()}` to `{new_pos.__str__()}`.")
+
 class Board:
     def __init__(self) -> None:
         self.board = [[10, 8, 9, 11, 12, 9, 8, 10],
@@ -32,6 +36,14 @@ class Engine:
         self.turn: int = 0
 
     def move(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> int:
+        """
+        Validates a move by finding the piece on the starting position and checking if it can legally move to the new position.
+
+        Takes into account check and castling as well.
+
+        This function will automaticlly move the piece to the new position if it is legal, else it will raise an `IllegalMoveException`.
+        """
+
         moves = self.generateMoves(pos)
 
         #clearing past en passent possibilities.
@@ -110,8 +122,7 @@ class Engine:
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
                 self.board.board[pos[1]][pos[0]] = 0
             
-            
-        else: raise Exception("Illegal move!")
+        else: raise IllegalMoveException(pos, newPos)
 
         # check detection
         self.turn = not self.turn
@@ -135,6 +146,11 @@ class Engine:
         else: return 0
 
     def __moveWithoutCheck(self, pos: Tuple[int, int], newPos: Tuple[int, int]) -> None:
+        """
+        This method makes illegal moves!
+        Please use `move` instead!
+        """
+
         self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
         self.board.board[pos[1]][pos[0]] = 0
 
@@ -203,7 +219,8 @@ class Engine:
 
         #white
         if self.turn == 0:
-            if pos[1] == 6 and not self.board.pieceAt((pos[0], 4))[0]: moves.append((pos[0], 4)) # 2 spaces forward
+            if pos[1] == 6 and not self.board.pieceAt((pos[0], 5))[0] and not self.board.pieceAt((pos[0], 4))[0]:
+                moves.append((pos[0], 4)) # 2 spaces forward
 
             if pos[1] > 0:
                 if not self.board.pieceAt((pos[0], pos[1]-1))[0]: moves.append((pos[0], pos[1]-1)) # 1 space forward
@@ -225,7 +242,8 @@ class Engine:
 
         #black
         else:
-            if pos[1] == 1 and not self.board.pieceAt((pos[0], 3))[0]: moves.append((pos[0], 3)) # 2 spaces forward
+            if pos[1] == 1 and not self.board.pieceAt((pos[0], 2))[0] and not self.board.pieceAt((pos[0], 3))[0]:
+                moves.append((pos[0], 3)) # 2 spaces forward
 
             if pos[1] < 7:
                 if not self.board.pieceAt((pos[0], pos[1]+1))[0]: moves.append((pos[0], pos[1]+1)) # 1 space forward
@@ -370,7 +388,8 @@ class Engine:
 
     def generateKingMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
-        check: bool
+        check: bool = False
+        
         if self.turn == 0:
             for y in range(-1, 2):
                 if pos[1]+y > 7 or pos[1]+y < 0: continue
@@ -381,7 +400,6 @@ class Engine:
 
             # castling
             if self.board.whiteCastling[0]:
-                check = False
                 for i in range(2, 4): # only go to index 2
                     check = self.inCheck(self.turn, (i, 7))
                     if self.board.pieceAt((i, 7))[0]: check = True
@@ -390,7 +408,6 @@ class Engine:
                 if not check: moves.append((12, 17))
 
             if self.board.whiteCastling[1]:
-                check = False
                 for i in range(5, 7): # only go to index 2
                     check = self.inCheck(self.turn, (i, 7))
                     if self.board.pieceAt((i, 7))[0]: check = True
@@ -408,7 +425,6 @@ class Engine:
 
             # castling
             if self.board.blackCastling[0]:
-                check = False
                 for i in range(2, 4): # only go to index 2
                     check = self.inCheck(self.turn, (i, 0))
                     if self.board.pieceAt((i, 0))[0]: check = True
@@ -417,7 +433,6 @@ class Engine:
                 if not check: moves.append((12, 10))
 
             if self.board.blackCastling[1]:
-                check = False
                 for i in range(5, 7): # only go to index 2
                     check = self.inCheck(self.turn, (i, 0))
                     if self.board.pieceAt((i, 0))[0]: check = True
