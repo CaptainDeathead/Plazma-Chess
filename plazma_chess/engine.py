@@ -18,7 +18,7 @@ class Board:
         
         self.whiteCastling: List[bool, bool] = [True, True]
         self.blackCastling: List[bool, bool] = [True, True]
-        
+
         self.whiteEnPassentPos: Tuple[int, int] | None = None
         self.blackEnPassentPos: Tuple[int, int] | None = None
         
@@ -38,7 +38,7 @@ class Engine:
         """
         Validates a move by finding the piece on the starting position and checking if it can legally move to the new position.
 
-        Takes into account check and castling as well.
+        Takes into account check, en passent and castling as well.
 
         This function will automaticlly move the piece to the new position if it is legal, else it will raise an `IllegalMoveException`.
         """
