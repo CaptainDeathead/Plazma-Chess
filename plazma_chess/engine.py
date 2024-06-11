@@ -78,7 +78,6 @@ class Engine:
                     self.board.board[yRank][7] = 0 # rook empty
             else:
                 piece = self.board.pieceAt((pos[0], pos[1]))
-
                 # set castling states
                 if piece == 4:
                     if pos[0] == 0: self.board.whiteCastling[0] = False
@@ -94,29 +93,19 @@ class Engine:
                 
                 #En passent setup
                 #white
-                elif piece == 1:
-                    if newPos[1] == (pos[1] + 2):
-                        self.board.whiteEnPassent.clear()
-                        self.board.whiteEnPassentPos = newPos
-                        if newPos[0] != 7:
-                            self.board.whiteEnPassentAtk.append((newPos[0]+1, newPos[1]+1))
-                        if newPos[0] != 0:
-                            self.board.whiteEnPassentAtk.append((newPos[0]-1, newPos[1]+1))
+                elif piece[1] == 1:
+                    if newPos[1] == (pos[1] - 2):
+                        self.board.whiteEnPassentAtk.clear()
+                        self.board.whiteEnPassentPos = (newPos[0], newPos[1]+1)
                     elif newPos == self.board.blackEnPassentPos:
-                        self.board.board[self.board.blackEnPassentPos[0]][self.board.blackEnPassentPos[1]-1] = 0
-
+                        self.board.board[self.board.blackEnPassentPos[1]+1][self.board.blackEnPassentPos[0]] = 0
                 #black
-                elif piece == 7:
+                elif piece[1] == 7:
                     if newPos[1] == (pos[1] + 2):
-                        self.board.blackEnPassent.clear()
-                        self.board.blackEnPassentPos = newPos
-                        if newPos[0] != 7:
-                            self.board.whiteEnPassentAtk.append((newPos[0]+1, newPos[1]-1))
-                        if newPos[0] != 0:
-                            self.board.whiteEnPassentAtk.append((newPos[0]-1, newPos[1]-1))
+                        self.board.blackEnPassentAtk.clear()
+                        self.board.blackEnPassentPos = (newPos[0], newPos[1]-1)
                     elif newPos == self.board.whiteEnPassentPos:
-                        self.board.board[self.board.whiteEnPassentPos[0]][self.board.whiteEnPassentPos[1]+1] = 0
-
+                        self.board.board[self.board.whiteEnPassentPos[1]-1][self.board.whiteEnPassentPos[0]] = 0
 
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
                 self.board.board[pos[1]][pos[0]] = 0
@@ -224,15 +213,15 @@ class Engine:
                     if col[0] and col[1] > 6: moves.append((pos[0]-1, pos[1]-1)) # 1 capture forward-left
                     
                     if self.board.blackEnPassentPos is not None:
-                        if pos in self.board.blackEnPassentAtk:
-                            moves.append(self.board.blackEnPassentPos) # capture en passent
+                        if pos[0]-1 == self.board.blackEnPassentPos[0] and pos[1]-1 == self.board.blackEnPassentPos[1]:
+                            moves.append(self.board.blackEnPassentPos)
                 if pos[0] < 7:
                     col = self.board.pieceAt((pos[0]+1, pos[1]-1))
                     if col[0] and col[1] > 6: moves.append((pos[0]+1, pos[1]-1)) # 1 capture forward-right
 
                     if self.board.blackEnPassentPos is not None:
-                        if pos in self.board.blackEnPassentAtk:
-                            moves.append(self.board.blackEnPassentPos) #en passent
+                        if pos[0]+1 == self.board.blackEnPassentPos[0] and pos[1]-1 == self.board.blackEnPassentPos[1]:
+                            moves.append(self.board.blackEnPassentPos)
 
         #black
         else:
@@ -244,9 +233,17 @@ class Engine:
                 if pos[0] > 0:
                     col = self.board.pieceAt((pos[0]-1, pos[1]+1))
                     if col[0] and col[1] < 7: moves.append((pos[0]-1, pos[1]+1)) # 1 capture forward-left
+
+                    if self.board.whiteEnPassentPos is not None:
+                        if pos[0]-1 == self.board.whiteEnPassentPos[0] and pos[1]+1 == self.board.whiteEnPassentPos[1]:
+                            moves.append(self.board.whiteEnPassentPos)
                 if pos[0] < 7:
                     col = self.board.pieceAt((pos[0]+1, pos[1]+1))
                     if col[0] and col[1] < 7: moves.append((pos[0]+1, pos[1]+1)) # 1 capture forward-right
+
+                    if self.board.whiteEnPassentPos is not None:
+                        if pos[0]+1 == self.board.whiteEnPassentPos[0] and pos[1]+1 == self.board.whiteEnPassentPos[1]:
+                            moves.append(self.board.whiteEnPassentPos)
         
         return moves
 
@@ -431,6 +428,7 @@ class Engine:
         return moves
 
     def generateMoves(self, pos: Tuple[int, int]) -> tuple:
+
         moves: list[Tuple[int, int]] = []
         piece = self.board.board[pos[1]][pos[0]]
 
