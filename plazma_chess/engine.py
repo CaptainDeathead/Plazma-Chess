@@ -18,8 +18,12 @@ class Board:
         
         self.whiteCastling: List[bool, bool] = [True, True]
         self.blackCastling: List[bool, bool] = [True, True]
+        self.whiteEnPassentAtk: List[Tuple[int, int]] = []
+        self.whiteEnPassentPos: Tuple[int, int] | None = None
+        self.blackEnPassentAtk: List[Tuple[int, int]] = []
+        self.blackEnPassentPos: Tuple[int, int] | None = None
         
-    def pieceAt(self, pos) -> Tuple[bool, int]:
+    def pieceAt(self, pos: Tuple[int, int]) -> Tuple[bool, int]:
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7: return (False, 0)
         piece: int = self.board[pos[1]][pos[0]]
         if piece != 0: return (True, piece)
@@ -41,6 +45,12 @@ class Engine:
         """
 
         moves = self.generateMoves(pos)
+
+        #clearing past en passent possibilities.
+        if self.turn == 0:
+            self.board.whiteEnPassentPos = None
+        else:
+            self.board.blackEnPassentPos = None
 
         # castling
         if pos == (4, 0) or pos == (4, 7):
@@ -93,6 +103,32 @@ class Engine:
                     elif pos[0] == 7: self.board.blackCastling[1] = False
 
                 elif piece == 11: self.board.blackCastling = [False, False]
+                
+                #En passent setup
+                #white
+                elif piece == 1:
+                    if newPos[1] == (pos[1] + 2):
+                        self.board.whiteEnPassent.clear()
+                        self.board.whiteEnPassentPos = newPos
+                        if newPos[0] != 7:
+                            self.board.whiteEnPassentAtk.append((newPos[0]+1, newPos[1]+1))
+                        if newPos[0] != 0:
+                            self.board.whiteEnPassentAtk.append((newPos[0]-1, newPos[1]+1))
+                    elif newPos == self.board.blackEnPassentPos:
+                        self.board.board[self.board.blackEnPassentPos[0]][self.board.blackEnPassentPos[1]-1] = 0
+
+                #black
+                elif piece == 7:
+                    if newPos[1] == (pos[1] + 2):
+                        self.board.blackEnPassent.clear()
+                        self.board.blackEnPassentPos = newPos
+                        if newPos[0] != 7:
+                            self.board.whiteEnPassentAtk.append((newPos[0]+1, newPos[1]-1))
+                        if newPos[0] != 0:
+                            self.board.whiteEnPassentAtk.append((newPos[0]-1, newPos[1]-1))
+                    elif newPos == self.board.whiteEnPassentPos:
+                        self.board.board[self.board.whiteEnPassentPos[0]][self.board.whiteEnPassentPos[1]+1] = 0
+
 
                 self.board.board[newPos[1]][newPos[0]] = self.board.board[pos[1]][pos[0]]
                 self.board.board[pos[1]][pos[0]] = 0
@@ -192,6 +228,7 @@ class Engine:
     def generatePawnMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
 
+        #white
         if self.turn == 0:
             if pos[1] == 6 and not self.board.pieceAt((pos[0], 5))[0] and not self.board.pieceAt((pos[0], 4))[0]:
                 moves.append((pos[0], 4)) # 2 spaces forward
@@ -202,9 +239,19 @@ class Engine:
                 if pos[0] > 0:
                     col = self.board.pieceAt((pos[0]-1, pos[1]-1))
                     if col[0] and col[1] > 6: moves.append((pos[0]-1, pos[1]-1)) # 1 capture forward-left
+                    
+                    if self.board.blackEnPassentPos is not None:
+                        if pos in self.board.blackEnPassentAtk:
+                            moves.append(self.board.blackEnPassentPos) # capture en passent
                 if pos[0] < 7:
                     col = self.board.pieceAt((pos[0]+1, pos[1]-1))
                     if col[0] and col[1] > 6: moves.append((pos[0]+1, pos[1]-1)) # 1 capture forward-right
+
+                    if self.board.blackEnPassentPos is not None:
+                        if pos in self.board.blackEnPassentAtk:
+                            moves.append(self.board.blackEnPassentPos) #en passent
+
+        #black
         else:
             if pos[1] == 1 and not self.board.pieceAt((pos[0], 2))[0] and not self.board.pieceAt((pos[0], 3))[0]:
                 moves.append((pos[0], 3)) # 2 spaces forward
