@@ -45,7 +45,7 @@ class Engine:
 
         moves = self.generateMoves(pos)
 
-        #clearing past en passent possibilities.
+        # clearing past en passent possibilities.
         if self.turn == 0:
             self.board.whiteEnPassentPos = None
         else:
@@ -102,14 +102,14 @@ class Engine:
 
                 elif piece == 11: self.board.blackCastling = [False, False]
                 
-                #En passent setup
-                #white
+                # En passent setup
+                # white
                 elif piece[1] == 1:
                     if newPos[1] == (pos[1] - 2):
                         self.board.whiteEnPassentPos = (newPos[0], newPos[1]+1)
                     elif newPos == self.board.blackEnPassentPos:
                         self.board.board[self.board.blackEnPassentPos[1]+1][self.board.blackEnPassentPos[0]] = 0
-                #black
+                # black
                 elif piece[1] == 7:
                     if newPos[1] == (pos[1] + 2):
                         self.board.blackEnPassentPos = (newPos[0], newPos[1]-1)
@@ -123,7 +123,6 @@ class Engine:
 
         # check detection
         self.turn = not self.turn
-
 
         moves = []
 
@@ -214,7 +213,7 @@ class Engine:
     def generatePawnMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
 
-        #white
+        # white
         if self.turn == 0:
             if pos[1] == 6 and not self.board.pieceAt((pos[0], 5))[0] and not self.board.pieceAt((pos[0], 4))[0]:
                 moves.append((pos[0], 4)) # 2 spaces forward
@@ -237,7 +236,7 @@ class Engine:
                         if pos[0]+1 == self.board.blackEnPassentPos[0] and pos[1]-1 == self.board.blackEnPassentPos[1]:
                             moves.append(self.board.blackEnPassentPos)
 
-        #black
+        # black
         else:
             if pos[1] == 1 and not self.board.pieceAt((pos[0], 2))[0] and not self.board.pieceAt((pos[0], 3))[0]:
                 moves.append((pos[0], 3)) # 2 spaces forward
@@ -287,6 +286,7 @@ class Engine:
 
     def generateSlidingMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
+        
         # forward
         for y in range(pos[1]-1, -1, -1):
             col = self.board.pieceAt((pos[0], y))
@@ -327,9 +327,11 @@ class Engine:
     
     def generateDiagonalMoves(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         moves: List[Tuple[int, int]] = []
+
         # forward-left
         x = pos[0]
         y = pos[1]
+
         while True:
             x-=1
             y-=1
@@ -343,6 +345,7 @@ class Engine:
         # forward-right
         x = pos[0]
         y = pos[1]
+
         while True:
             x+=1
             y-=1
@@ -356,6 +359,7 @@ class Engine:
         # back-left
         x = pos[0]
         y = pos[1]
+
         while True:
             x-=1
             y+=1
@@ -370,6 +374,7 @@ class Engine:
         # back-right
         x = pos[0]
         y = pos[1]
+
         while True:
             x+=1
             y+=1
@@ -469,6 +474,7 @@ class Engine:
 
         newMoves: list[Tuple[int, int]] = []
         for move in moves:
+            
             # castling
             if move[1] > 7:
                 newMoves.append(move)
