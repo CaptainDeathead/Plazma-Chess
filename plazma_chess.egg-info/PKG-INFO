@@ -1,14 +1,19 @@
 Metadata-Version: 2.1
 Name: plazma-chess
-Version: 1.2.0
-Summary: UNKNOWN
-Home-page: UNKNOWN
-License: UNKNOWN
-Platform: UNKNOWN
+Version: 1.2.1
+Summary: A fully function chess engine written in python
+Author-email: CaptainDeathead <unstableplazma@gmail.com>
+Project-URL: Homepage, https://github.com/CaptainDeathead/plazma-chess-engine
+Keywords: chess,engine,game
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >3
 Description-Content-Type: text/markdown
 License-File: LICENCE
+Provides-Extra: dev
 
-﻿# Plazma Chess Engine
+# Plazma Chess Engine
 
 ## In development!
 
@@ -111,5 +116,4 @@ These functions do not take checks into account so illegal move errors are a ris
 
 You can remedy this by using the `inCheck` function which takes a `turn` argument and and optional `square` argument which is used to check for a specific piece. It returns `True` or `False` if the king is in check.
 
-To bypass the check detection there is a function called `__moveWithoutCheck`. This function is dangerous as it defies the rules of chess. It should only be used for move generation in bots which will garrentee faster move generation.
-
+To bypass the check detection there is a function called `__moveWithoutCheck`. This function is dangerous as it defies the rules of chess. It should only be used for move generation in bots which will garrentee faster move generation. chess. It should only be used for move generation in bots which will garrentee faster move generation.
