@@ -18,9 +18,8 @@ class Board:
         
         self.whiteCastling: List[bool, bool] = [True, True]
         self.blackCastling: List[bool, bool] = [True, True]
-        self.whiteEnPassentAtk: List[Tuple[int, int]] = []
+        
         self.whiteEnPassentPos: Tuple[int, int] | None = None
-        self.blackEnPassentAtk: List[Tuple[int, int]] = []
         self.blackEnPassentPos: Tuple[int, int] | None = None
         
     def pieceAt(self, pos: Tuple[int, int]) -> Tuple[bool, int]:
@@ -107,14 +106,12 @@ class Engine:
                 #white
                 elif piece[1] == 1:
                     if newPos[1] == (pos[1] - 2):
-                        self.board.whiteEnPassentAtk.clear()
                         self.board.whiteEnPassentPos = (newPos[0], newPos[1]+1)
                     elif newPos == self.board.blackEnPassentPos:
                         self.board.board[self.board.blackEnPassentPos[1]+1][self.board.blackEnPassentPos[0]] = 0
                 #black
                 elif piece[1] == 7:
                     if newPos[1] == (pos[1] + 2):
-                        self.board.blackEnPassentAtk.clear()
                         self.board.blackEnPassentPos = (newPos[0], newPos[1]-1)
                     elif newPos == self.board.whiteEnPassentPos:
                         self.board.board[self.board.whiteEnPassentPos[1]-1][self.board.whiteEnPassentPos[0]] = 0
