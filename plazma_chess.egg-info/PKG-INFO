@@ -1,6 +1,6 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: plazma-chess
-Version: 1.2.1
+Version: 1.2.2
 Summary: A fully function chess engine written in python
 Author-email: CaptainDeathead <unstableplazma@gmail.com>
 Project-URL: Homepage, https://github.com/CaptainDeathead/plazma-chess-engine
@@ -12,6 +12,7 @@ Requires-Python: >3
 Description-Content-Type: text/markdown
 License-File: LICENCE
 Provides-Extra: dev
+Dynamic: license-file
 
 # Plazma Chess Engine
 

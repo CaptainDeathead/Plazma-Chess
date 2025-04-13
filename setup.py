@@ -5,7 +5,7 @@ with open('README.md', 'rb') as f:
 
 setup(
     name='plazma_chess',
-    version='1.2.1',
+    version='1.2.2',
     packages=find_packages(),
     install_requires=[],
     long_description=description,
