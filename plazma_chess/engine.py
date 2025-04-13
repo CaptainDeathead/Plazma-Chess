@@ -28,6 +28,22 @@ class Board:
         if piece != 0: return (True, piece)
         else: return (False, 0)
 
+    def canPromote(self, pos: Tuple[int, int]) -> bool:
+        """Returns a bool -> Can promote = True, cannot promote = False"""
+
+        piece_found, piece_type = self.pieceAt(pos)
+
+        if not piece_found:
+            return False
+        
+        # White
+        if piece_type == 1:
+            if pos[1] == len(self.board) - 1: return True
+        elif piece_type == 7:
+            if pos[1] == 0: return True
+        else:
+            return False
+
 class Engine:
     def __init__(self) -> None:
         self.TURN_STR: Dict[int, str] = {0: "white", 1: "black"}
